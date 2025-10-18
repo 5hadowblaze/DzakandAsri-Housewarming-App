@@ -43,7 +43,7 @@ const DraggableChip: React.FC<{ rsvp: RSVP, onClick: () => void }> = ({ rsvp, on
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: rsvp.id });
 
     return (
-        <div ref={setNodeRef} style={{ opacity: isDragging ? 0.3 : 1 }} className="cursor-grab active:cursor-grabbing w-full">
+        <div ref={setNodeRef} style={{ visibility: isDragging ? 'hidden' : 'visible' }} className="cursor-grab active:cursor-grabbing w-full">
             <div {...listeners} {...attributes} onClick={onClick}>
                  <Chip rsvp={rsvp} />
             </div>
@@ -51,7 +51,7 @@ const DraggableChip: React.FC<{ rsvp: RSVP, onClick: () => void }> = ({ rsvp, on
     );
 };
 
-const SessionBox: React.FC<{ session: Session; attendees: RSVP[]; }> = ({ session, attendees }) => {
+const SessionBox: React.FC<{ session: Session; attendees: RSVP[]; onChipClick: (rsvp: RSVP) => void; }> = ({ session, attendees, onChipClick }) => {
     const { setNodeRef, isOver } = useDroppable({ id: session.id });
     const isFull = attendees.length >= session.capacity;
     const pulseClass = isOver && !isFull ? 'ring-4 ring-offset-2 ring-[#0098D4] ring-offset-gray-900 animate-pulse' : '';
@@ -78,10 +78,8 @@ const SessionBox: React.FC<{ session: Session; attendees: RSVP[]; }> = ({ sessio
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, x: -10 }}
-                            className="flex items-center space-x-2 bg-gray-900/50 p-1.5 rounded-lg shadow-sm"
                         >
-                            <div className="w-5 h-5 rounded-full flex-shrink-0" style={{backgroundColor: useAppContext().getLineColor(useAppContext().getStationById(rsvp.stationId)!.line)}}></div>
-                            <span className="text-sm font-medium text-gray-300 truncate">{rsvp.name}</span>
+                            <DraggableChip rsvp={rsvp} onClick={() => onChipClick(rsvp)} />
                         </motion.div>
                     ))}
                 </AnimatePresence>
@@ -175,6 +173,7 @@ const Plan: React.FC = () => {
                                 key={session.id}
                                 session={session}
                                 attendees={bookingsBySession[session.id] || []}
+                                onChipClick={handleEditClick}
                             />
                         ))}
                     </motion.div>
@@ -182,7 +181,16 @@ const Plan: React.FC = () => {
             </div>
 
             <DragOverlay>
-                {activeDragRsvp ? <Chip rsvp={activeDragRsvp} isDragging /> : null}
+                {activeDragRsvp ? (
+                    <motion.div
+                        initial={{ scale: 0.95, opacity: 0.8 }}
+                        animate={{ scale: 1.05, opacity: 1, boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.3)' }}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                        className="rounded-lg"
+                    >
+                        <Chip rsvp={activeDragRsvp} isDragging />
+                    </motion.div>
+                ) : null}
             </DragOverlay>
 
             <EditModal 

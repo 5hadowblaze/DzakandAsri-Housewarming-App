@@ -1,4 +1,6 @@
 import React from 'react';
+import { TUBE_LINE_COLORS } from '../constants';
+import { TubeLine } from '../types';
 
 const InfoPill: React.FC<{ text: string; color: string; textColor?: string; icon?: React.ReactNode }> = ({ text, color, textColor = 'white', icon }) => (
     <span className="flex items-center space-x-2 text-sm font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: color, color: textColor }}>
@@ -24,8 +26,8 @@ const Info: React.FC = () => {
             title: "Flat PPR Asri and Dzak's Housewarming Party!",
             description: "Join us for our housewarming party! Food, drinks, and good times.",
             location: "Flat 21, Sporle Court, London, SW11 2EP",
-            startTime: "2024-08-24T11:00:00",
-            endTime: "2024-08-24T21:00:00",
+            startTime: "2025-10-25T11:00:00",
+            endTime: "2025-10-25T21:00:00",
         };
         const icsContent = `
 BEGIN:VCALENDAR
@@ -65,11 +67,9 @@ END:VCALENDAR
                      </div>
                      <div>
                         <p className="text-gray-200 font-medium">Our new place is at <span className="font-bold">Flat 21, Sporle Court, London, SW11 2EP.</span></p>
-                        <p className="mt-2 text-gray-300">Nearest stations:</p>
+                        <p className="mt-2 text-gray-300">The nearest major station is:</p>
                         <div className="flex flex-wrap gap-2 mt-2">
-                            <InfoPill text="Party Central" color="#E32017" />
-                            <InfoPill text="Jubilee Junction" color="#A0A5A9" />
-                            <InfoPill text="District Drop-off" color="#00782A" />
+                            <InfoPill text="Clapham Junction" color={TUBE_LINE_COLORS[TubeLine.OVERGROUND]} />
                         </div>
                      </div>
                 </div>

@@ -44,6 +44,7 @@ export const STATIONS: Station[] = [
     { id: 'farringdon', name: 'Farringdon', line: TubeLine.ELIZABETH },
     { id: 'canada-water', name: 'Canada Water', line: TubeLine.JUBILEE },
     { id: 'clapham-common', name: 'Clapham Common', line: TubeLine.NORTHERN },
+    { id: 'clapham-junction', name: 'Clapham Junction', line: TubeLine.OVERGROUND },
     { id: 'brixton', name: 'Brixton', line: TubeLine.VICTORIA },
     { id: 'hammersmith', name: 'Hammersmith', line: TubeLine.HAMMERSMITH_CITY },
     { id: 'wimbledon', name: 'Wimbledon', line: TubeLine.DISTRICT },
