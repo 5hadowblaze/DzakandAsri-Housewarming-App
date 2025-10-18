@@ -1,33 +1,39 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { ref, onValue, set, push, child, remove } from 'firebase/database';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import { ref, onValue, set, push, remove } from 'firebase/database';
 import { database } from '../services/firebase';
 import { RSVP, Booking, Session, Station, AppContextType, TubeLine } from '../types';
 import { STATIONS, SESSIONS, TUBE_LINE_COLORS } from '../constants';
+
+// Helper to load a value from localStorage
+const loadFromStorage = <T,>(key: string, defaultValue: T): T => {
+  try {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : defaultValue;
+  } catch (error) {
+    console.error(`Error loading ${key} from storage`, error);
+    return defaultValue;
+  }
+};
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [allRsvps, setAllRsvps] = useState<Record<string, RSVP>>({});
   const [allBookings, setAllBookings] = useState<Record<string, Booking>>({});
-  const [userRsvp, setUserRsvp] = useState<RSVP | undefined>(undefined);
+  const [userRsvp, setUserRsvp] = useState<RSVP | undefined>(() => loadFromStorage('userRsvp', undefined));
 
+  // Effect to synchronize data from Firebase
   useEffect(() => {
     const rsvpsRef = ref(database, 'rsvps');
     const bookingsRef = ref(database, 'bookings');
 
     const rsvpListener = onValue(rsvpsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setAllRsvps(data);
-      }
+      setAllRsvps(snapshot.val() || {});
     });
 
     const bookingListener = onValue(bookingsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setAllBookings(data);
-      }
+      setAllBookings(snapshot.val() || {});
     });
 
     return () => {
@@ -35,6 +41,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       bookingListener();
     };
   }, []);
+
+  // Effect to persist userRsvp to localStorage for session continuity
+  useEffect(() => {
+    if (userRsvp) {
+      localStorage.setItem('userRsvp', JSON.stringify(userRsvp));
+    } else {
+      localStorage.removeItem('userRsvp');
+    }
+  }, [userRsvp]);
+
+  // Effect to ensure userRsvp is valid against the master list from Firebase
+  useEffect(() => {
+    if (userRsvp && !allRsvps[userRsvp.id]) {
+      setUserRsvp(undefined);
+    }
+  }, [allRsvps, userRsvp]);
+
 
   const addRsvp = async (rsvpData: Omit<RSVP, 'id'>) => {
     const newRsvpRef = push(ref(database, 'rsvps'));
@@ -44,27 +67,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const updateRsvp = async (updatedRsvp: RSVP) => {
-    const rsvpRef = child(ref(database, 'rsvps'), updatedRsvp.id);
-    await set(rsvpRef, updatedRsvp);
+    await set(ref(database, `rsvps/${updatedRsvp.id}`), updatedRsvp);
   };
 
   const deleteRsvp = async (rsvpId: string) => {
-    const rsvpRef = child(ref(database, 'rsvps'), rsvpId);
-    await remove(rsvpRef);
-    // Also remove any bookings associated with this RSVP
-    const bookingToDelete = Object.values(allBookings).find(b => b.rsvpId === rsvpId);
-    if (bookingToDelete) {
-      const bookingRef = child(ref(database, 'bookings'), (bookingToDelete as any).id);
-      await remove(bookingRef);
+    await remove(ref(database, `rsvps/${rsvpId}`));
+    
+    const bookingEntry = Object.entries(allBookings).find(([, b]) => b.rsvpId === rsvpId);
+    if (bookingEntry) {
+      await remove(ref(database, `bookings/${bookingEntry[0]}`));
+    }
+
+    if (userRsvp && userRsvp.id === rsvpId) {
+      setUserRsvp(undefined);
     }
   };
 
   const addBooking = async (booking: Booking) => {
-    // A user can only have one booking. Remove old one if it exists.
-    const existingBooking = Object.values(allBookings).find(b => b.rsvpId === booking.rsvpId);
-    if (existingBooking) {
-      const bookingRef = child(ref(database, 'bookings'), (existingBooking as any).id);
-      await remove(bookingRef);
+    const existingBookingEntry = Object.entries(allBookings).find(([, b]) => b.rsvpId === booking.rsvpId);
+    if (existingBookingEntry) {
+      await remove(ref(database, `bookings/${existingBookingEntry[0]}`));
     }
 
     const newBookingRef = push(ref(database, 'bookings'));
@@ -72,14 +94,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const unassignRsvp = async (rsvpId: string) => {
-    const bookingToUnassign = Object.values(allBookings).find(b => b.rsvpId === rsvpId);
-    if (bookingToUnassign) {
-      const bookingRef = child(ref(database, 'bookings'), (bookingToUnassign as any).id);
-      await remove(bookingRef);
+    const bookingEntry = Object.entries(allBookings).find(([, b]) => b.rsvpId === rsvpId);
+    if (bookingEntry) {
+      await remove(ref(database, `bookings/${bookingEntry[0]}`));
     }
   };
   
-  const userBooking = React.useMemo(() => {
+  const userBooking = useMemo(() => {
     if (!userRsvp) return undefined;
     return Object.values(allBookings).find(b => b.rsvpId === userRsvp.id);
   }, [userRsvp, allBookings]);
