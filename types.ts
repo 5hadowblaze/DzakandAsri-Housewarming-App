@@ -1,4 +1,3 @@
-// Fix: Provide full implementation for types.ts
 export enum TubeLine {
   BAKERLOO = 'Bakerloo',
   CENTRAL = 'Central',
@@ -54,7 +53,6 @@ export interface AppContextType {
   stations: Station[];
   getStationById: (id: string) => Station | undefined;
   getLineColor: (line: TubeLine) => string;
-  // Fix: Add userRsvp and userBooking to the context type
   userRsvp: RSVP | undefined;
   userBooking: Booking | undefined;
 }

@@ -59,12 +59,16 @@ export const SESSIONS: Session[] = [
     { id: 's5', time: '19:00 – 21:00', capacity: 8 },
 ];
 
-export const FRIEND_GROUPS = ['Work', 'Uni', 'Neighbors', 'Gym', 'Childhood friends'];
-
-export const FRIEND_GROUP_COLORS: Record<string, { light: string; dark: string; }> = {
-  Work: { light: 'bg-sky-100 border-sky-400', dark: 'dark:bg-sky-900/50 dark:border-sky-500' },
-  Uni: { light: 'bg-emerald-100 border-emerald-400', dark: 'dark:bg-emerald-900/50 dark:border-emerald-500' },
-  Neighbors: { light: 'bg-amber-100 border-amber-400', dark: 'dark:bg-amber-900/50 dark:border-amber-500' },
-  Gym: { light: 'bg-rose-100 border-rose-400', dark: 'dark:bg-rose-900/50 dark:border-rose-500' },
-  'Childhood friends': { light: 'bg-violet-100 border-violet-400', dark: 'dark:bg-violet-900/50 dark:border-violet-500' },
-};
+export const FRIEND_GROUPS = [
+    'KYUEM',
+    'Taylors',
+    'IBMers',
+    'Lilly',
+    'SSA',
+    'SEB',
+    'Surrey',
+    'UCL',
+    'KCL',
+    'ICL',
+    'Other',
+];

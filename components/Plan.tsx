@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { Booking, RSVP, Session, Station } from '../types';
-import { FRIEND_GROUPS, FRIEND_GROUP_COLORS, STATIONS } from '../constants';
+import { RSVP, Session, Station } from '../types';
+import { FRIEND_GROUPS, STATIONS } from '../constants';
 import { DndContext, useDraggable, useDroppable, DragOverlay, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { motion, AnimatePresence } from 'framer-motion';
-import Confetti from './common/Confetti';
+import RsvpForm from './RSVP';
+import ConfirmationModal from './common/ConfirmationModal';
 
 // --- Reusable Components ---
 
@@ -20,10 +21,10 @@ const StationPill: React.FC<{ rsvp: RSVP }> = ({ rsvp }) => {
     );
 };
 
-const Chip: React.FC<{ rsvp: RSVP, isDragging?: boolean }> = ({ rsvp, isDragging }) => (
+const Chip: React.FC<{ rsvp: RSVP; onEdit: () => void; isDragging?: boolean }> = ({ rsvp, onEdit, isDragging }) => (
     <motion.div
         layoutId={`chip-${rsvp.id}`}
-        className={`flex items-center space-x-3 p-2 bg-gray-700 rounded-lg shadow-md w-full ${isDragging ? 'opacity-50' : ''}`}
+        className={`relative flex items-center space-x-3 p-2 pr-4 bg-gray-700 rounded-lg shadow-md w-full ${isDragging ? 'opacity-50' : ''}`}
     >
         <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center font-bold text-blue-300 text-lg flex-shrink-0">
             {rsvp.name.charAt(0).toUpperCase()}
@@ -36,16 +37,30 @@ const Chip: React.FC<{ rsvp: RSVP, isDragging?: boolean }> = ({ rsvp, isDragging
                 <p className="text-xs text-gray-400 truncate">{rsvp.friendGroup}</p>
             </div>
         </div>
+        {!isDragging && (
+            <button 
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                }}
+                className="absolute top-1/2 right-1 -translate-y-1/2 p-1.5 rounded-full bg-blue-600/70 hover:bg-blue-600 text-white z-10 transition-colors"
+                aria-label="Edit RSVP"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+            </button>
+        )}
     </motion.div>
 );
 
-const DraggableChip: React.FC<{ rsvp: RSVP, onClick: () => void }> = ({ rsvp, onClick }) => {
+const DraggableChip: React.FC<{ rsvp: RSVP; onEditClick: () => void }> = ({ rsvp, onEditClick }) => {
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: rsvp.id });
 
     return (
         <div ref={setNodeRef} style={{ visibility: isDragging ? 'hidden' : 'visible' }} className="cursor-grab active:cursor-grabbing w-full">
-            <div {...listeners} {...attributes} onClick={onClick}>
-                 <Chip rsvp={rsvp} />
+            <div {...listeners} {...attributes}>
+                 <Chip rsvp={rsvp} onEdit={onEditClick} />
             </div>
         </div>
     );
@@ -79,7 +94,7 @@ const SessionBox: React.FC<{ session: Session; attendees: RSVP[]; onChipClick: (
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, x: -10 }}
                         >
-                            <DraggableChip rsvp={rsvp} onClick={() => onChipClick(rsvp)} />
+                            <DraggableChip rsvp={rsvp} onEditClick={() => onChipClick(rsvp)} />
                         </motion.div>
                     ))}
                 </AnimatePresence>
@@ -91,7 +106,7 @@ const SessionBox: React.FC<{ session: Session; attendees: RSVP[]; onChipClick: (
 // --- Main Plan Component ---
 
 const Plan: React.FC = () => {
-    const { sessions, allRsvps, allBookings, addRsvp, updateRsvp, deleteRsvp, addBooking, unassignRsvp } = useAppContext();
+    const { sessions, allRsvps, allBookings, addBooking, unassignRsvp, updateRsvp, deleteRsvp } = useAppContext();
     const [activeDragRsvp, setActiveDragRsvp] = useState<RSVP | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingRsvp, setEditingRsvp] = useState<RSVP | null>(null);
@@ -151,17 +166,15 @@ const Plan: React.FC = () => {
             <div className="container mx-auto px-4 py-8">
                 <motion.div initial={{opacity: 0}} animate={{opacity: 1}} className="text-center mb-8">
                     <h2 className="text-3xl font-bold text-blue-300 tracking-tight">Party Planning Board</h2>
-                    <p className="text-lg text-gray-300 mt-2 max-w-2xl mx-auto">Add guests and drag them to an arrival slot. Click a guest's chip to edit their details.</p>
+                    <p className="text-lg text-gray-300 mt-2 max-w-2xl mx-auto">Add new guests, drag them to a slot, or click the edit icon to update their details.</p>
                 </motion.div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* --- Left Column: Form & Unassigned --- */}
                     <div className="lg:col-span-1 space-y-8">
                         <RsvpForm />
                         <UnassignedGuests unassignedRsvps={unassignedRsvps} onChipClick={handleEditClick} />
                     </div>
 
-                    {/* --- Right Column: Sessions --- */}
                     <motion.div
                         variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
                         initial="hidden"
@@ -188,7 +201,7 @@ const Plan: React.FC = () => {
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
                         className="rounded-lg"
                     >
-                        <Chip rsvp={activeDragRsvp} isDragging />
+                        <Chip rsvp={activeDragRsvp} onEdit={() => {}} isDragging />
                     </motion.div>
                 ) : null}
             </DragOverlay>
@@ -204,72 +217,16 @@ const Plan: React.FC = () => {
     );
 };
 
-// --- Sub-components for Plan ---
-
-const RsvpForm: React.FC = () => {
-    const { addRsvp } = useAppContext();
-    const [name, setName] = useState('');
-    const [stationId, setStationId] = useState('');
-    const [friendGroup, setFriendGroup] = useState('');
-    const [showConfetti, setShowConfetti] = useState(false);
-    
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (name && stationId && friendGroup) {
-            await addRsvp({ name, stationId, friendGroup });
-            setName('');
-            setStationId('');
-            setFriendGroup('');
-            setShowConfetti(true);
-            setTimeout(() => setShowConfetti(false), 3000);
-        }
-    };
-    
-    return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-             <Confetti fire={showConfetti} />
-            <form onSubmit={handleSubmit} className="p-6 bg-gray-800 rounded-2xl shadow-lg space-y-4">
-                <div className="text-center">
-                    <h3 className="text-xl font-bold text-blue-300">Add a Guest</h3>
-                </div>
-                <div>
-                    <label htmlFor="name" className="text-sm font-medium text-gray-300">Full Name</label>
-                    <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required className="mt-1 block w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#003688] focus:border-[#003688]" placeholder="e.g., Jane Doe" />
-                </div>
-                <div>
-                    <label htmlFor="station" className="text-sm font-medium text-gray-300">Nearest Station</label>
-                     <select id="station" value={stationId} onChange={(e) => setStationId(e.target.value)} required className="mt-1 block w-full pl-3 pr-10 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[#003688] focus:border-[#003688]">
-                        <option value="" disabled>Select a station</option>
-                        {STATIONS.map(station => (
-                            <option key={station.id} value={station.id}>{station.name} ({station.line})</option>
-                        ))}
-                    </select>
-                </div>
-                 <div>
-                    <label htmlFor="friend-group" className="text-sm font-medium text-gray-300">Friend Group</label>
-                     <select id="friend-group" value={friendGroup} onChange={(e) => setFriendGroup(e.target.value)} required className="mt-1 block w-full pl-3 pr-10 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[#003688] focus:border-[#003688]">
-                        <option value="" disabled>Select a group</option>
-                        {FRIEND_GROUPS.map(group => (
-                            <option key={group} value={group}>{group}</option>
-                        ))}
-                    </select>
-                </div>
-                <button type="submit" className="w-full py-2 px-4 bg-[#DC241F] text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-gray-800 transition-transform transform hover:scale-105">
-                    Add to Guest List
-                </button>
-            </form>
-        </motion.div>
-    );
-};
+// --- Sub-components ---
 
 const UnassignedGuests: React.FC<{ unassignedRsvps: RSVP[], onChipClick: (rsvp: RSVP) => void }> = ({ unassignedRsvps, onChipClick }) => {
     const { setNodeRef, isOver } = useDroppable({ id: 'unassigned' });
     return (
         <div className="p-4 bg-gray-800/50 rounded-2xl shadow-inner">
-            <h3 className="text-lg font-bold text-center text-gray-200 mb-4">Unassigned Guests ({unassignedRsvps.length})</h3>
+            <h3 className="text-lg font-bold text-center text-gray-200 mb-4">Lounge ({unassignedRsvps.length})</h3>
             <div ref={setNodeRef} className={`min-h-[8rem] p-2 rounded-lg space-y-3 transition-colors ${isOver ? 'bg-green-900/50' : ''}`}>
                 {unassignedRsvps.map(rsvp => (
-                    <DraggableChip key={rsvp.id} rsvp={rsvp} onClick={() => onChipClick(rsvp)} />
+                    <DraggableChip key={rsvp.id} rsvp={rsvp} onEditClick={() => onChipClick(rsvp)} />
                 ))}
                 {unassignedRsvps.length === 0 && (
                     <div className="text-center text-gray-400 py-4">All guests assigned!</div>
@@ -282,6 +239,7 @@ const UnassignedGuests: React.FC<{ unassignedRsvps: RSVP[], onChipClick: (rsvp: 
 
 const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | null; onSave: (rsvp: RSVP) => void; onDelete: (rsvpId: string) => void; }> = ({ isOpen, onClose, rsvp, onSave, onDelete }) => {
     const [formState, setFormState] = useState<Omit<RSVP, 'id'>>({ name: '', stationId: '', friendGroup: '' });
+    const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
     useEffect(() => {
         if (rsvp) {
@@ -300,11 +258,10 @@ const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | n
         onClose();
     };
     
-    const handleDelete = () => {
-        if (window.confirm(`Are you sure you want to remove ${rsvp.name}?`)) {
-            onDelete(rsvp.id);
-            onClose();
-        }
+    const handleDeleteConfirm = () => {
+        onDelete(rsvp.id);
+        setDeleteConfirmOpen(false);
+        onClose();
     };
 
     return (
@@ -330,13 +287,21 @@ const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | n
                         </select>
                     </div>
                     <div className="flex justify-between items-center pt-4">
-                         <button onClick={handleDelete} className="px-4 py-2 text-sm font-semibold text-red-400 bg-red-900/50 rounded-lg hover:bg-red-900">Cancel RSVP</button>
+                         <button onClick={() => setDeleteConfirmOpen(true)} className="px-4 py-2 text-sm font-semibold text-red-400 bg-red-900/50 rounded-lg hover:bg-red-900">Remove Guest</button>
                          <div className="space-x-2">
                              <button onClick={onClose} className="px-4 py-2 text-sm font-semibold text-gray-200 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
                              <button onClick={handleSave} className="px-4 py-2 text-sm font-semibold text-white bg-[#003688] rounded-lg hover:bg-blue-800">Save Changes</button>
                          </div>
                     </div>
                 </motion.div>
+
+                <ConfirmationModal
+                    isOpen={isDeleteConfirmOpen}
+                    onClose={() => setDeleteConfirmOpen(false)}
+                    onConfirm={handleDeleteConfirm}
+                    title="Confirm Deletion"
+                    message={`Are you sure you want to remove ${rsvp.name} from the guest list? This action cannot be undone.`}
+                />
             </motion.div>
             )}
         </AnimatePresence>

@@ -25,7 +25,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             </div>
             <h1 className="text-lg sm:text-xl font-bold text-gray-200 hidden sm:block">Asri & Dzak's</h1>
           </div>
-          <div className="flex items-center space-x-1 sm:space-x-2">
+          
+          <div className="flex items-center space-x-4">
             <nav className="relative flex items-center bg-gray-700/70 rounded-full p-1">
               <div
                 className="absolute bg-gray-800 h-full top-0 rounded-full shadow-md transition-all duration-300 ease-in-out"
@@ -47,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
               ))}
             </nav>
           </div>
+
         </div>
       </div>
     </header>
