@@ -1,0 +1,5 @@
+{
+  "name": "Housewarming RSVP - London Underground Theme",
+  "description": "A playful, responsive web app for a housewarming party with a London Tube theme. Features include an RSVP form with unique costume station selection, drag-and-drop session booking, and themed information pages.",
+  "requestFramePermissions": []
+}

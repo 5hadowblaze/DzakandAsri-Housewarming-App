@@ -1,0 +1,69 @@
+import { TubeLine, Station, Session } from './types';
+
+export const TUBE_LINE_COLORS: Record<TubeLine, string> = {
+  [TubeLine.BAKERLOO]: '#B36305',
+  [TubeLine.CENTRAL]: '#E32017',
+  [TubeLine.CIRCLE]: '#FFD300',
+  [TubeLine.DISTRICT]: '#00782A',
+  [TubeLine.HAMMERSMITH_CITY]: '#F3A9BB',
+  [TubeLine.JUBILEE]: '#A0A5A9',
+  [TubeLine.METROPOLITAN]: '#9B0056',
+  [TubeLine.NORTHERN]: '#000000',
+  [TubeLine.PICCADILLY]: '#003688',
+  [TubeLine.VICTORIA]: '#0098D4',
+  [TubeLine.WATERLOO_CITY]: '#95CDBA',
+  [TubeLine.DLR]: '#00A4A7',
+  [TubeLine.OVERGROUND]: '#EE7C0E',
+  [TubeLine.ELIZABETH]: '#6950a1',
+};
+
+export const STATIONS: Station[] = [
+    { id: 'baker-street', name: 'Baker Street', line: TubeLine.BAKERLOO },
+    { id: 'waterloo', name: 'Waterloo', line: TubeLine.WATERLOO_CITY },
+    { id: 'london-bridge', name: 'London Bridge', line: TubeLine.JUBILEE },
+    { id: 'kings-cross', name: 'King\'s Cross St. Pancras', line: TubeLine.PICCADILLY },
+    { id: 'victoria', name: 'Victoria', line: TubeLine.VICTORIA },
+    { id: 'oxford-circus', name: 'Oxford Circus', line: TubeLine.CENTRAL },
+    { id: 'paddington', name: 'Paddington', line: TubeLine.CIRCLE },
+    { id: 'canary-wharf', name: 'Canary Wharf', line: TubeLine.JUBILEE },
+    { id: 'stratford', name: 'Stratford', line: TubeLine.CENTRAL },
+    { id: 'bank', name: 'Bank', line: TubeLine.CENTRAL },
+    { id: 'westminster', name: 'Westminster', line: TubeLine.DISTRICT },
+    { id: 'south-kensington', name: 'South Kensington', line: TubeLine.DISTRICT },
+    { id: 'angel', name: 'Angel', line: TubeLine.NORTHERN },
+    { id: 'camden-town', name: 'Camden Town', line: TubeLine.NORTHERN },
+    { id: 'notting-hill-gate', name: 'Notting Hill Gate', line: TubeLine.CENTRAL },
+    { id: 'shepherds-bush', name: 'Shepherd\'s Bush', line: TubeLine.CENTRAL },
+    { id: 'liverpool-street', name: 'Liverpool Street', line: TubeLine.METROPOLITAN },
+    { id: 'euston', name: 'Euston', line: TubeLine.VICTORIA },
+    { id: 'piccadilly-circus', name: 'Piccadilly Circus', line: TubeLine.PICCADILLY },
+    { id: 'green-park', name: 'Green Park', line: TubeLine.JUBILEE },
+    { id: 'embankment', name: 'Embankment', line: TubeLine.BAKERLOO },
+    { id: 'tower-hill', name: 'Tower Hill', line: TubeLine.DISTRICT },
+    { id: 'shoreditch-high-street', name: 'Shoreditch High Street', line: TubeLine.OVERGROUND },
+    { id: 'farringdon', name: 'Farringdon', line: TubeLine.ELIZABETH },
+    { id: 'canada-water', name: 'Canada Water', line: TubeLine.JUBILEE },
+    { id: 'clapham-common', name: 'Clapham Common', line: TubeLine.NORTHERN },
+    { id: 'brixton', name: 'Brixton', line: TubeLine.VICTORIA },
+    { id: 'hammersmith', name: 'Hammersmith', line: TubeLine.HAMMERSMITH_CITY },
+    { id: 'wimbledon', name: 'Wimbledon', line: TubeLine.DISTRICT },
+    { id: 'richmond', name: 'Richmond', line: TubeLine.DISTRICT },
+];
+
+export const SESSIONS: Session[] = [
+    { id: 's1', time: '11:00 – 13:00', capacity: 8 },
+    { id: 's2', time: '13:00 – 15:00', capacity: 8 },
+    { id: 's3', time: '15:00 – 17:00', capacity: 8 },
+    { id: 's4', time: '17:00 – 19:00', capacity: 8 },
+    { id: 's5', time: '19:00 – 21:00', capacity: 8 },
+];
+
+export const FRIEND_GROUPS = ['Work', 'Uni', 'Neighbors', 'Gym', 'Childhood friends'];
+
+export const FRIEND_GROUP_COLORS: Record<string, { light: string; dark: string; }> = {
+  Work: { light: 'bg-sky-100 border-sky-400', dark: 'dark:bg-sky-900/50 dark:border-sky-500' },
+  Uni: { light: 'bg-emerald-100 border-emerald-400', dark: 'dark:bg-emerald-900/50 dark:border-emerald-500' },
+  Neighbors: { light: 'bg-amber-100 border-amber-400', dark: 'dark:bg-amber-900/50 dark:border-amber-500' },
+  Gym: { light: 'bg-rose-100 border-rose-400', dark: 'dark:bg-rose-900/50 dark:border-rose-500' },
+  'Childhood friends': { light: 'bg-violet-100 border-violet-400', dark: 'dark:bg-violet-900/50 dark:border-violet-500' },
+};
