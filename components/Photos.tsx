@@ -1,92 +1,101 @@
-import React, { useState, useCallback } from 'react';
+import { useCallback, useState } from "react";
+import { useDropzone } from "@uploadthing/react";
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
-const PhotoGrid: React.FC = () => {
-    const images = Array.from({ length: 12 }, (_, i) => ({
-        id: i,
-        src: `https://picsum.photos/seed/${i+10}/600/${Math.floor(Math.random() * 200) + 600}`,
-        alt: `Housewarming party photo ${i + 1}`,
-    }));
+// ... (imports)
 
-    return (
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-            {images.map(image => (
-                <div key={image.id} className="overflow-hidden rounded-2xl shadow-lg transform hover:scale-105 hover:shadow-2xl transition-all duration-300">
-                    <img src={image.src} alt={image.alt} className="w-full h-auto" />
-                </div>
-            ))}
-        </div>
-    );
-};
+export const Photos = () => {
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
 
-const PhotoUpload: React.FC = () => {
-    const [isDragging, setIsDragging] = useState(false);
-    const [files, setFiles] = useState<File[]>([]);
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setFiles(acceptedFiles);
+    handleUpload(acceptedFiles);
+  }, []);
 
-    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-    };
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-    };
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
-    const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            setFiles(prev => [...prev, ...Array.from(e.dataTransfer.files)]);
-            e.dataTransfer.clearData();
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [],
+    },
+  });
+
+  const handleUpload = (files: File[]) => {
+    const storage = getStorage();
+    files.forEach((file) => {
+      const storageRef = ref(storage, `images/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress((prev) => ({ ...prev, [file.name]: progress }));
+        },
+        (error) => {
+          console.error("Upload failed:", error);
         }
-    }, []);
-    
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if(e.target.files) {
-        setFiles(prev => [...prev, ...Array.from(e.target.files as FileList)]);
-      }
-    }
+      );
+    });
+  };
 
-    return (
-        <div className="p-6 bg-gray-800 rounded-2xl shadow-lg mb-8">
-            <h3 className="text-2xl font-bold text-blue-300 mb-4 text-center">Share Your Snaps!</h3>
-            <div
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                className={`relative border-4 border-dashed rounded-2xl p-8 text-center transition-colors duration-300 ${isDragging ? 'border-blue-500 bg-blue-900/30' : 'border-gray-600 bg-gray-700/50'}`}
+  return (
+    <div className="w-full text-white pb-8">
+      <div className="text-center py-4">
+        <h2 className="font-bold text-3xl">Share Your Photos!</h2>
+        <p>Drag and drop your pictures from the party below</p>
+      </div>
+      <div
+        {...getRootProps({ className: "upload-container" })}
+        className="mt-4 flex justify-center items-center w-full"
+      >
+        <label
+          htmlFor="dropzone-file"
+          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg
+              className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
             >
-                <input type="file" id="file-upload" multiple accept="image/*" className="hidden" onChange={handleFileChange} />
-                <label htmlFor="file-upload" className="cursor-pointer">
-                    <p className="text-gray-300">Drag & drop your photos here, or click to browse.</p>
-                    <p className="text-sm text-gray-400 mt-1">Don't be shy, we want to see all the fun!</p>
-                </label>
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">Click to upload</span> or drag and drop
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              SVG, PNG, JPG or GIF (MAX. 800x400px)
+            </p>
+          </div>
+          <input {...getInputProps()} />
+        </label>
+      </div>
+
+      {files.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-xl font-semibold">Upload Progress:</h3>
+          {files.map((file) => (
+            <div key={file.name} className="mt-2">
+              <p>{file.name}</p>
+              <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${uploadProgress[file.name] || 0}%` }}
+                ></div>
+              </div>
             </div>
-            {files.length > 0 && (
-                <div className="mt-4">
-                    <h4 className="font-semibold text-gray-200">Staged for Upload:</h4>
-                    <ul className="list-disc list-inside text-gray-300">
-                        {files.map((file, i) => <li key={i}>{file.name}</li>)}
-                    </ul>
-                </div>
-            )}
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 };
-
-const Photos: React.FC = () => {
-    return (
-        <div className="max-w-6xl mx-auto py-8 px-4">
-            <PhotoUpload />
-            <PhotoGrid />
-        </div>
-    );
-};
-
-export default Photos;
