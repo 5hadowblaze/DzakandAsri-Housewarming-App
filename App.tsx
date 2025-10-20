@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Plan from './components/Plan';
 import Info from './components/Info';
-import Photos from './components/Photos';
+import { Photos } from './components/Photos';
 import Splash from './components/Splash';
 import { AppTab } from './types';
 
