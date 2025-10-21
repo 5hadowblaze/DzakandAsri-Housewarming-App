@@ -1,57 +1,28 @@
-import { useCallback, useState } from "react";
-import { useDropzone } from "@uploadthing/react";
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
-
-// ... (imports)
+import React, { useCallback, useState } from "react";
 
 export const Photos = () => {
   const [files, setFiles] = useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
-    handleUpload(acceptedFiles);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: {
-      "image/*": [],
-    },
-  });
-
-  const handleUpload = (files: File[]) => {
-    const storage = getStorage();
-    files.forEach((file) => {
-      const storageRef = ref(storage, `images/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadProgress((prev) => ({ ...prev, [file.name]: progress }));
-        },
-        (error) => {
-          console.error("Upload failed:", error);
-        }
-      );
-    });
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files));
+    }
   };
 
   return (
     <div className="w-full text-white pb-8">
       <div className="text-center py-4">
         <h2 className="font-bold text-3xl">Share Your Photos!</h2>
-        <p>Drag and drop your pictures from the party below</p>
+        <p className="text-gray-300">Select photos from the party to preview them below</p>
       </div>
-      <div
-        {...getRootProps({ className: "upload-container" })}
-        className="mt-4 flex justify-center items-center w-full"
-      >
+      <div className="mt-4 flex justify-center items-center w-full">
         <label
-          htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+          htmlFor="photo-upload"
+          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg
@@ -70,30 +41,39 @@ export const Photos = () => {
               />
             </svg>
             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-semibold">Click to upload</span> or drag and drop
+              <span className="font-semibold">Click to select photos</span>
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
+              PNG, JPG or GIF files
             </p>
           </div>
-          <input {...getInputProps()} />
+          <input
+            id="photo-upload"
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileInput}
+            className="hidden"
+          />
         </label>
       </div>
 
       {files.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-xl font-semibold">Upload Progress:</h3>
-          {files.map((file) => (
-            <div key={file.name} className="mt-2">
-              <p>{file.name}</p>
-              <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div
-                  className="bg-blue-600 h-2.5 rounded-full"
-                  style={{ width: `${uploadProgress[file.name] || 0}%` }}
-                ></div>
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-4">Selected Photos:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {files.map((file, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`Preview ${index + 1}`}
+                  className="w-full h-48 object-cover rounded-lg shadow-md"
+                  onLoad={() => URL.revokeObjectURL(URL.createObjectURL(file))}
+                />
+                <p className="text-sm text-gray-300 mt-2 truncate">{file.name}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

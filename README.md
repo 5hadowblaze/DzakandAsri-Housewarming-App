@@ -10,36 +10,28 @@ This is a web application for Dzak and Asri's housewarming party, designed with 
 
 - **RSVP System:** Guests can confirm their attendance.
 - **Interactive Seating:** Guests can assign themselves to a session, themed as a tube line.
-- **Real-time Updates:** Built with Firebase Realtime Database for live data synchronization.
+- **Local Storage:** Data is saved locally in the browser for a seamless experience.
 - **Themed UI:** A fun and engaging user interface based on the London Underground map.
 
 ## Run Locally
 
-**Prerequisites:** Node.js and a Firebase project.
+**Prerequisites:** Node.js
 
 1.  **Install dependencies:**
     ```bash
     npm install
     ```
-2.  **Configure Firebase:**
-    - Create a `services/firebase.ts` file.
-    - Add your Firebase project's configuration to this file.
-3.  **Run the app:**
+2.  **Run the app:**
     ```bash
     npm run dev
     ```
 
-## Deploy to Firebase
+## Deploy to Netlify
 
-1.  **Install Firebase CLI:**
+1.  **Build the project:**
     ```bash
-    npm install -g firebase-tools
+    npm run build
     ```
-2.  **Login to Firebase:**
-    ```bash
-    firebase login
-    ```
-3.  **Deploy:**
-    ```bash
-    firebase deploy --only hosting
-    ```
+2.  **Deploy the `dist` folder to Netlify**
+
+You can drag and drop the `dist` folder to Netlify's deploy interface, or connect your repository for automatic deployments.
