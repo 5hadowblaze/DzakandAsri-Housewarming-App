@@ -920,6 +920,8 @@ const Plan: React.FC = () => {
                         )
                     ) : ''
                 }
+                confirmText="Confirm Transfer"
+                confirmColor="blue"
             />
         </DndContext>
     );

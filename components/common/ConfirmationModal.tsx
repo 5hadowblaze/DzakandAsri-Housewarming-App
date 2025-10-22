@@ -7,9 +7,41 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
   title: string;
   message: string;
+  confirmText?: string;
+  confirmColor?: 'red' | 'blue' | 'green';
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, title, message }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onConfirm, 
+  title, 
+  message, 
+  confirmText = "Confirm Deletion",
+  confirmColor = "red"
+}) => {
+  
+  const getConfirmButtonStyles = () => {
+    switch (confirmColor) {
+      case 'blue':
+        return "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
+      case 'green':
+        return "text-white bg-green-600 hover:bg-green-700 focus:ring-green-500";
+      default:
+        return "text-white bg-red-600 hover:bg-red-700 focus:ring-red-500";
+    }
+  };
+
+  const getLedColor = () => {
+    switch (confirmColor) {
+      case 'blue':
+        return "bg-blue-400";
+      case 'green':
+        return "bg-green-400";
+      default:
+        return "bg-red-400";
+    }
+  };
   return (
     <AnimatePresence>
       {isOpen && (
@@ -30,7 +62,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
             {/* Tube-style header */}
             <div className="flex items-center space-x-2 mb-4">
               <motion.div 
-                className="w-2 h-2 bg-red-400 rounded-full"
+                className={`w-2 h-2 rounded-full ${getLedColor()}`}
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -50,11 +82,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, 
               </motion.button>
               <motion.button
                 onClick={onConfirm}
-                className="px-5 py-2 text-sm font-mono font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-gray-800 transition-colors uppercase tracking-wide"
+                className={`px-5 py-2 text-sm font-mono font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors uppercase tracking-wide ${getConfirmButtonStyles()}`}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Confirm Deletion
+                {confirmText}
               </motion.button>
             </div>
           </motion.div>
