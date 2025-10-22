@@ -52,11 +52,11 @@ export const STATIONS: Station[] = [
 ];
 
 export const SESSIONS: Session[] = [
-    { id: 's1', time: '11:00 – 13:00', capacity: 8 },
-    { id: 's2', time: '13:00 – 15:00', capacity: 8 },
-    { id: 's3', time: '15:00 – 17:00', capacity: 8 },
-    { id: 's4', time: '17:00 – 19:00', capacity: 8 },
-    { id: 's5', time: '19:00 – 21:00', capacity: 8 },
+    { id: 's1', time: '11:00 – 13:00', capacity: 25 },
+    { id: 's2', time: '13:00 – 15:00', capacity: 25 },
+    { id: 's3', time: '15:00 – 17:00', capacity: 25 },
+    { id: 's4', time: '17:00 – 19:00', capacity: 25 },
+    { id: 's5', time: '19:00 – 21:00', capacity: 25 },
 ];
 
 export const FRIEND_GROUPS = [

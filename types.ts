@@ -30,13 +30,17 @@ export interface Session {
 export interface RSVP {
   id: string;
   name: string;
+  email: string;
   stationId: string;
   friendGroup: string;
+  createdAt?: any; // Firebase timestamp
 }
 
 export interface Booking {
+  id: string; // Firebase document ID
   rsvpId: string;
   sessionId: string;
+  createdAt?: any; // Firebase timestamp
 }
 
 export type AppTab = 'plan' | 'info' | 'photos';
@@ -45,7 +49,7 @@ export interface AppContextType {
   addRsvp: (rsvp: Omit<RSVP, 'id'>) => Promise<void>;
   updateRsvp: (rsvp: RSVP) => Promise<void>;
   deleteRsvp: (rsvpId: string) => Promise<void>;
-  addBooking: (booking: Booking) => Promise<void>;
+  addBooking: (booking: Omit<Booking, 'id'>) => Promise<void>;
   unassignRsvp: (rsvpId: string) => Promise<void>;
   sessions: Session[];
   allRsvps: RSVP[];

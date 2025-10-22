@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// Firebase Storage Rules for Housewarming App
+// These rules allow anyone to read and write to the photos folder
+// In production, you might want more restrictive rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow access to photos
+    match /photos/{allPaths=**} {
+      allow read, write: if true;
+    }
+    
+    // Allow access to all files for testing
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

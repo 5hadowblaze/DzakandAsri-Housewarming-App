@@ -8,7 +8,7 @@ import { Photos } from './components/Photos';
 import Splash from './components/Splash';
 import { AppTab } from './types';
 
-const MainApp: React.FC = () => {
+const MainApp: React.FC<{ onResetSplash: () => void }> = ({ onResetSplash }) => {
     const [activeTab, setActiveTab] = useState<AppTab>('plan');
 
     const renderTabContent = () => {
@@ -29,6 +29,7 @@ const MainApp: React.FC = () => {
             <Header
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                onLogoClick={onResetSplash}
             />
             <main className="py-8 px-2 sm:px-4">
                 <div className="container mx-auto">
@@ -44,13 +45,17 @@ const MainApp: React.FC = () => {
 const App: React.FC = () => {
     const [showSplash, setShowSplash] = useState(true);
 
+    const handleResetSplash = () => {
+        setShowSplash(true);
+    };
+
     if (showSplash) {
         return <Splash onFinished={() => setShowSplash(false)} />;
     }
 
     return (
         <AppProvider>
-            <MainApp />
+            <MainApp onResetSplash={handleResetSplash} />
         </AppProvider>
     );
 };

@@ -73,7 +73,7 @@ const Confetti: React.FC<ConfettiProps> = ({ fire }) => {
     }
   }, [fire]);
 
-  return <canvas ref={canvasRef} className="confetti-canvas"></canvas>;
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-50" style={{ display: fire ? 'block' : 'none' }}></canvas>;
 };
 
 export default Confetti;
