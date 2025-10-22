@@ -22,27 +22,18 @@ const TubeStyledChip: React.FC<{ rsvp: RSVP; onEditClick: () => void; isDragging
         >
             <div 
                 {...dragHandleProps}
-                className="flex items-center space-x-3 flex-1 cursor-grab active:cursor-grabbing"
+                className="flex items-center space-x-3 flex-1 cursor-grab active:cursor-grabbing min-w-0 overflow-hidden"
             >
-                {/* Tube-style passenger indicator */}
-                <div className="flex items-center space-x-3">
-                    <motion.div 
-                        className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center font-bold text-white text-sm flex-shrink-0 border-3 border-gray-300 shadow-lg"
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ type: "spring", stiffness: 400 }}
-                    >
-                        {rsvp.name.charAt(0).toUpperCase()}
-                    </motion.div>
-                    <div className="w-1.5 h-8 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: station ? getLineColor(station.line) : '#666' }}></div>
-                </div>
+                {/* Tube line indicator */}
+                <div className="w-1.5 h-8 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: station ? getLineColor(station.line) : '#666' }}></div>
                 
                 {/* Passenger info styled like tube announcements */}
-                <div className="overflow-hidden flex-1">
-                    <p className="font-mono text-white text-sm font-semibold truncate">{rsvp.name}</p>
-                    <div className="flex items-center space-x-2 text-xs">
-                        <span className="text-gray-300 font-mono">{station?.name || 'Unknown'}</span>
-                        <span className="text-gray-500">•</span>
-                        <span className="text-gray-400 font-mono">{rsvp.friendGroup}</span>
+                <div className="overflow-hidden flex-1 min-w-0">
+                    <p className="font-mono text-white text-sm font-semibold truncate w-full">{rsvp.name}</p>
+                    <div className="flex items-center space-x-1 text-xs overflow-hidden w-full">
+                        <span className="text-gray-300 font-mono truncate max-w-[100px] flex-shrink-0">{rsvp.friendGroup}</span>
+                        <span className="text-gray-500 flex-shrink-0">•</span>
+                        <span className="text-gray-400 font-mono truncate flex-1 min-w-0">{station?.name || 'Unknown'}</span>
                     </div>
                 </div>
             </div>
@@ -185,9 +176,9 @@ const SessionBox: React.FC<{ session: Session; attendees: RSVP[]; onChipClick: (
                                 animate={{ opacity: [0.5, 1, 0.5] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                             >
-                                EMPTY CARRIAGE
+                                NO GUESTS YET
                             </motion.div>
-                            <div className="text-xs">Drag passengers here</div>
+                            <div className="text-xs">Drag guests here</div>
                         </div>
                     )}
                 </div>
@@ -231,7 +222,7 @@ const UnassignedGuests: React.FC<{ unassignedRsvps: RSVP[], onChipClick: (rsvp: 
                         <span className="text-white font-mono text-lg font-bold tracking-wider">WAITING LOUNGE</span>
                     </div>
                     <div className="bg-gray-800 px-2 py-1 rounded-lg">
-                        <span className="text-white text-xs font-mono">{unassignedRsvps.length} PASSENGERS</span>
+                        <span className="text-white text-xs font-mono">{unassignedRsvps.length} GUESTS</span>
                     </div>
                 </div>
                 <motion.div 
@@ -261,7 +252,7 @@ const UnassignedGuests: React.FC<{ unassignedRsvps: RSVP[], onChipClick: (rsvp: 
                             >
                                 PLATFORM CLEAR
                             </motion.div>
-                            <div className="text-xs">Drag new passengers here</div>
+                            <div className="text-xs">Drag new guests here</div>
                         </div>
                     )}
                 </div>
@@ -315,10 +306,10 @@ const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | n
                                 animate={{ opacity: [0.5, 1, 0.5] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                             />
-                            <span className="text-white font-mono text-lg font-bold tracking-wider">PASSENGER DETAILS</span>
+                            <span className="text-white font-mono text-lg font-bold tracking-wider">YOUR DETAILS</span>
                         </div>
                         <motion.div 
-                            className="mt-1 text-xs font-mono text-gray-400 uppercase tracking-wide"
+                            className="mt-1 text-xs font-mono text-gray-400 uppercase tracking-wide truncate"
                             animate={{ opacity: [0.8, 1, 0.8] }}
                             transition={{ duration: 3, repeat: Infinity }}
                         >
@@ -336,7 +327,7 @@ const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | n
                                 value={formState.name} 
                                 onChange={handleChange} 
                                 className="w-full px-3 py-2 text-sm bg-black border border-gray-600 rounded-xl shadow-sm placeholder-gray-500 text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
-                                placeholder="Enter passenger name..."
+                                placeholder="Enter your name..."
                             />
                         </div>
                         
@@ -348,7 +339,7 @@ const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | n
                                 value={formState.email} 
                                 onChange={handleChange} 
                                 className="w-full px-3 py-2 text-sm bg-black border border-gray-600 rounded-xl shadow-sm placeholder-gray-500 text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
-                                placeholder="passenger@london.gov.uk"
+                                placeholder="your.email@example.com"
                             />
                         </div>
                         
@@ -386,7 +377,7 @@ const EditModal: React.FC<{ isOpen: boolean; onClose: () => void; rsvp: RSVP | n
                                 whileHover={{ scale: 1.05, y: -2 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                Remove Passenger
+                                Remove Guest
                             </motion.button>
                             <div className="space-x-2">
                                 <motion.button 
@@ -430,6 +421,17 @@ const Plan: React.FC = () => {
     const [activeDragRsvp, setActiveDragRsvp] = useState<RSVP | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingRsvp, setEditingRsvp] = useState<RSVP | null>(null);
+    
+    // Move confirmation modal state
+    const [isMoveConfirmOpen, setMoveConfirmOpen] = useState(false);
+    const [pendingMove, setPendingMove] = useState<{
+        rsvpId: string;
+        fromSessionId?: string;
+        toSessionId: string;
+        rsvpName: string;
+        fromTime?: string;
+        toTime: string;
+    } | null>(null);
 
     const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -459,9 +461,24 @@ const Plan: React.FC = () => {
 
         const rsvpId = active.id as string;
         const sessionId = over.id as string;
+        const rsvp = allRsvps.find(r => r.id === rsvpId);
+        
+        if (!rsvp) return;
         
         if (over.id === 'unassigned') {
-            await unassignRsvp(rsvpId);
+            // Find current session to show confirmation
+            const currentBooking = allBookings.find(b => b.rsvpId === rsvpId);
+            const currentSession = currentBooking ? sessions.find(s => s.id === currentBooking.sessionId) : null;
+            
+            setPendingMove({
+                rsvpId,
+                fromSessionId: currentSession?.id,
+                toSessionId: 'unassigned',
+                rsvpName: rsvp.name,
+                fromTime: currentSession?.time,
+                toTime: 'Unassigned'
+            });
+            setMoveConfirmOpen(true);
             return;
         }
 
@@ -470,12 +487,48 @@ const Plan: React.FC = () => {
             const attendees = bookingsBySession[session.id] || [];
             if (attendees.length >= session.capacity) {
                 // Tube-style announcement for full carriage
-                const announcement = `🚇 PASSENGER ANNOUNCEMENT: This carriage (${session.time}) is now at full capacity. Please try another carriage. Mind the gap!`;
+                const announcement = `🚇 ANNOUNCEMENT: This time slot (${session.time}) is now full. Please try another time slot!`;
                 alert(announcement);
                 return;
             }
-            await addBooking({ rsvpId, sessionId });
+            
+            // Find current session to show confirmation
+            const currentBooking = allBookings.find(b => b.rsvpId === rsvpId);
+            const currentSession = currentBooking ? sessions.find(s => s.id === currentBooking.sessionId) : null;
+            
+            // If it's the same session, no need to confirm
+            if (currentSession?.id === sessionId) {
+                return;
+            }
+            
+            setPendingMove({
+                rsvpId,
+                fromSessionId: currentSession?.id,
+                toSessionId: sessionId,
+                rsvpName: rsvp.name,
+                fromTime: currentSession?.time,
+                toTime: session.time
+            });
+            setMoveConfirmOpen(true);
         }
+    };
+
+    const handleMoveConfirm = async () => {
+        if (!pendingMove) return;
+        
+        if (pendingMove.toSessionId === 'unassigned') {
+            await unassignRsvp(pendingMove.rsvpId);
+        } else {
+            await addBooking({ rsvpId: pendingMove.rsvpId, sessionId: pendingMove.toSessionId });
+        }
+        
+        setMoveConfirmOpen(false);
+        setPendingMove(null);
+    };
+
+    const handleMoveCancel = () => {
+        setMoveConfirmOpen(false);
+        setPendingMove(null);
     };
     
     const handleEditClick = (rsvp: RSVP) => {
@@ -486,9 +539,9 @@ const Plan: React.FC = () => {
     return (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             {/* Tube-style main container */}
-            <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+            <div className="min-h-screen bg-gray-900">
                 {/* Transport for London style header */}
-                <div className="bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-gray-700 shadow-2xl rounded-b-3xl">
+                <div className="bg-gray-800 border-b-2 border-gray-700 shadow-2xl rounded-b-3xl">
                     <div className="container mx-auto px-6 py-8">
                         <motion.div 
                             initial={{opacity: 0, y: -30}} 
@@ -670,7 +723,7 @@ const Plan: React.FC = () => {
                                         }}
                                         transition={{ duration: 3, repeat: Infinity }}
                                     >
-                                        Party Planning Network
+                                        RSVP & Book Your Spot
                                     </motion.span>
                                 </h1>
                                 <motion.p 
@@ -678,13 +731,13 @@ const Plan: React.FC = () => {
                                     animate={{ opacity: [0.7, 1, 0.7] }}
                                     transition={{ duration: 4, repeat: Infinity }}
                                 >
-                                    REAL-TIME PASSENGER MANAGEMENT SYSTEM
+                                    CHOOSE YOUR TIME SLOT FOR THE PARTY
                                 </motion.p>
                             </motion.div>
                             
                             {/* Enhanced service information panel */}
                             <motion.div 
-                                className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 border-2 border-gray-600 rounded-2xl p-6 max-w-5xl mx-auto shadow-xl"
+                                className="bg-gray-800 border-2 border-gray-600 rounded-2xl p-6 max-w-5xl mx-auto shadow-xl"
                                 initial={{ scale: 0.9, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: 0.8 }}
@@ -701,8 +754,8 @@ const Plan: React.FC = () => {
                                         }}
                                     >
                                         <span className="whitespace-nowrap">► LIVE SERVICE UPDATES</span>
-                                        <span className="whitespace-nowrap">► REAL-TIME PASSENGER TRACKING</span>
-                                        <span className="whitespace-nowrap">► AUTOMATED CARRIAGE ALLOCATION</span>
+                                        <span className="whitespace-nowrap">► REAL-TIME GUEST TRACKING</span>
+                                        <span className="whitespace-nowrap">► AUTOMATED TIME SLOT BOOKING</span>
                                         <span className="whitespace-nowrap">► CROSS-DEVICE SYNCHRONIZATION</span>
                                     </motion.div>
                                 </div>
@@ -712,25 +765,25 @@ const Plan: React.FC = () => {
                                     <div className="bg-black/40 rounded-xl p-4 border border-gray-600">
                                         <div className="flex items-center space-x-2 mb-2">
                                             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                            <span className="text-green-300 font-bold">TICKET OFFICE</span>
+                                            <span className="text-green-300 font-bold">STEP 1</span>
                                         </div>
-                                        <p className="text-gray-300">Add passenger details and issue travel tickets</p>
+                                        <p className="text-gray-300">Fill in your name and details below</p>
                                     </div>
                                     
                                     <div className="bg-black/40 rounded-xl p-4 border border-gray-600">
                                         <div className="flex items-center space-x-2 mb-2">
                                             <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                                            <span className="text-blue-300 font-bold">PLATFORM CONTROL</span>
+                                            <span className="text-blue-300 font-bold">STEP 2</span>
                                         </div>
-                                        <p className="text-gray-300">Drag passengers to assign carriages</p>
+                                        <p className="text-gray-300">Drag your name to pick a time slot</p>
                                     </div>
                                     
                                     <div className="bg-black/40 rounded-xl p-4 border border-gray-600">
                                         <div className="flex items-center space-x-2 mb-2">
                                             <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-                                            <span className="text-yellow-300 font-bold">PASSENGER INFO</span>
+                                            <span className="text-yellow-300 font-bold">STEP 3</span>
                                         </div>
-                                        <p className="text-gray-300">Click edit icon to update details</p>
+                                        <p className="text-gray-300">Click the edit icon to change details anytime</p>
                                     </div>
                                 </div>
 
@@ -809,7 +862,7 @@ const Plan: React.FC = () => {
                             <UnassignedGuests unassignedRsvps={unassignedRsvps} onChipClick={handleEditClick} />
                         </div>
 
-                        {/* Right side - Train carriages */}
+                        {/* Right side - Time slots */}
                         <motion.div
                             variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
                             initial="hidden"
@@ -848,6 +901,25 @@ const Plan: React.FC = () => {
                 rsvp={editingRsvp}
                 onSave={updateRsvp}
                 onDelete={deleteRsvp}
+            />
+
+            {/* Move Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={isMoveConfirmOpen}
+                onClose={handleMoveCancel}
+                onConfirm={handleMoveConfirm}
+                title="🚇 Confirm Passenger Transfer"
+                message={
+                    pendingMove ? (
+                        pendingMove.fromTime && pendingMove.toTime !== 'Unassigned' ? (
+                            `Are you sure you want to move ${pendingMove.rsvpName} from ${pendingMove.fromTime} to ${pendingMove.toTime}?\n\nThis transfer cannot be undone. Please ensure the passenger is available at the new time slot.`
+                        ) : pendingMove.toTime === 'Unassigned' ? (
+                            `Are you sure you want to remove ${pendingMove.rsvpName} from ${pendingMove.fromTime} and move them to the unassigned list?\n\nThey will need to be reassigned to a time slot later.`
+                        ) : (
+                            `Are you sure you want to assign ${pendingMove.rsvpName} to ${pendingMove.toTime}?\n\nPlease confirm the passenger is available at this time.`
+                        )
+                    ) : ''
+                }
             />
         </DndContext>
     );

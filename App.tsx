@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppProvider, useAppContext } from './context/AppContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Home from './components/Home';
 import Plan from './components/Plan';
 import Info from './components/Info';
 import { Photos } from './components/Photos';
@@ -9,10 +10,12 @@ import Splash from './components/Splash';
 import { AppTab } from './types';
 
 const MainApp: React.FC<{ onResetSplash: () => void }> = ({ onResetSplash }) => {
-    const [activeTab, setActiveTab] = useState<AppTab>('plan');
+    const [activeTab, setActiveTab] = useState<AppTab>('home');
 
     const renderTabContent = () => {
         switch (activeTab) {
+            case 'home':
+                return <Home onNavigate={setActiveTab} />;
             case 'plan':
                 return <Plan />;
             case 'info':
@@ -20,7 +23,7 @@ const MainApp: React.FC<{ onResetSplash: () => void }> = ({ onResetSplash }) => 
             case 'photos':
                 return <Photos />;
             default:
-                return <Plan />;
+                return <Home onNavigate={setActiveTab} />;
         }
     };
 

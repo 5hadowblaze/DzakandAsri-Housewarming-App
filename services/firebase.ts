@@ -4,13 +4,23 @@ import { getStorage } from 'firebase/storage';
 
 // Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || ''
 };
+
+// Check if all required configuration is present
+const requiredConfig = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+const missingConfig = requiredConfig.filter(key => !firebaseConfig[key]);
+
+if (missingConfig.length > 0) {
+  console.error('Missing Firebase configuration:', missingConfig);
+  console.error('Please create a .env file with the required Firebase configuration variables.');
+  console.error('See .env.example for the required format.');
+}
 
 console.log('Firebase config:', {
   apiKey: firebaseConfig.apiKey ? '***PRESENT***' : 'MISSING',
@@ -23,7 +33,10 @@ console.log('Firebase config:', {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const storage = getStorage(app);
+
+// Initialize storage with explicit bucket URL for the new Firebase Storage domain
+export const storage = getStorage(app, `gs://${firebaseConfig.storageBucket}`);
 
 console.log('Firebase app initialized successfully');
 console.log('Storage instance:', storage);
+console.log('Storage app config bucket:', firebaseConfig.storageBucket);

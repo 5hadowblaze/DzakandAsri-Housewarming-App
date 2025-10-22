@@ -9,7 +9,8 @@ interface HeaderProps {
 }
 
 const tabs: { id: AppTab; label: string }[] = [
-  { id: 'plan', label: 'Plan' },
+  { id: 'home', label: 'Home' },
+  { id: 'plan', label: 'RSVP' },
   { id: 'info', label: 'Info' },
   { id: 'photos', label: 'Photos' },
 ];
@@ -140,8 +141,8 @@ const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onLogoClick })
               <div
                 className="absolute bg-gray-800 h-full top-0 rounded-full shadow-md transition-all duration-300 ease-in-out"
                 style={{
-                  width: `calc(100% / 3 - 0.25rem)`,
-                  left: `calc(${activeIndex * (100 / 3)}% + 0.125rem)`,
+                  width: `calc(${100 / tabs.length}% - 0.25rem)`,
+                  left: `calc(${activeIndex * (100 / tabs.length)}% + 0.125rem)`,
                 }}
               />
               {tabs.map((tab) => (

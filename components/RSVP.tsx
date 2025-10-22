@@ -62,9 +62,16 @@ const RsvpForm: React.FC = () => {
                             value={name} 
                             onChange={(e) => setName(e.target.value)} 
                             required 
+                            maxLength={15}
                             className="w-full px-3 py-2 text-sm bg-black border border-gray-600 rounded-xl shadow-sm placeholder-gray-500 text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors" 
                             placeholder="Enter passenger name..." 
                         />
+                        <div className="flex justify-between mt-1">
+                            <span className="text-xs font-mono text-gray-500">Max 15 characters</span>
+                            <span className={`text-xs font-mono ${name.length > 12 ? 'text-yellow-400' : 'text-gray-500'}`}>
+                                {name.length}/15
+                            </span>
+                        </div>
                     </div>
                     
                     <div>
@@ -81,7 +88,7 @@ const RsvpForm: React.FC = () => {
                     </div>
                     
                     <div>
-                        <label htmlFor="station" className="block text-sm font-mono font-medium text-gray-300 mb-2 uppercase tracking-wide">Nearest Station</label>
+                        <label htmlFor="station" className="block text-sm font-mono font-medium text-gray-300 mb-2 uppercase tracking-wide">Your Station Costume</label>
                         <select 
                             id="station" 
                             value={stationId} 
@@ -89,7 +96,7 @@ const RsvpForm: React.FC = () => {
                             required 
                             className="w-full px-3 py-2 text-sm bg-black border border-gray-600 rounded-xl shadow-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors"
                         >
-                            <option value="" disabled>Select departure station</option>
+                            <option value="" disabled>Select station</option>
                             {STATIONS.map(station => (
                                 <option key={station.id} value={station.id}>{station.name} ({station.line})</option>
                             ))}

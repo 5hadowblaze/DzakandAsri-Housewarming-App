@@ -18,6 +18,7 @@ export const Photos = () => {
 
   // Load existing photos from Firebase Storage on component mount
   useEffect(() => {
+    console.log('Photos component mounted, loading photos...');
     loadPhotos();
   }, []);
 
@@ -25,18 +26,30 @@ export const Photos = () => {
     try {
       setLoading(true);
       console.log('Loading photos from Firebase Storage...');
+      console.log('Storage bucket:', storage?.app?.options?.storageBucket);
       
       // Check if storage is properly configured
       if (!storage) {
         console.error('Firebase Storage is not initialized');
+        setPhotos([]);
+        return;
+      }
+      
+      // Check if we have a storage bucket configured
+      if (!storage.app.options.storageBucket) {
+        console.error('No storage bucket configured in Firebase config');
+        setPhotos([]);
         return;
       }
       
       const photosRef = ref(storage, 'photos');
       console.log('Storage reference created:', photosRef);
+      console.log('Full storage path:', photosRef.fullPath);
       
       const photosList = await listAll(photosRef);
-      console.log('Photos list:', photosList);
+      console.log('Photos list result:', photosList);
+      console.log('Number of items found:', photosList.items.length);
+      console.log('Items:', photosList.items.map(item => ({ name: item.name, fullPath: item.fullPath })));
       
       if (photosList.items.length === 0) {
         console.log('No photos found in storage');
@@ -46,7 +59,9 @@ export const Photos = () => {
       
       const photoPromises = photosList.items.map(async (itemRef) => {
         try {
+          console.log('Getting download URL for:', itemRef.name);
           const url = await getDownloadURL(itemRef);
+          console.log('Download URL obtained for', itemRef.name, ':', url);
           return {
             id: itemRef.name,
             url,
@@ -55,20 +70,29 @@ export const Photos = () => {
           };
         } catch (error) {
           console.error('Error getting download URL for', itemRef.name, error);
+          console.error('Error code:', error.code);
+          console.error('Error message:', error.message);
           return null;
         }
       });
       
       const loadedPhotos = (await Promise.all(photoPromises)).filter(photo => photo !== null);
+      console.log('Loaded photos count:', loadedPhotos.length);
       console.log('Loaded photos:', loadedPhotos);
       setPhotos(loadedPhotos.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime()));
     } catch (error) {
       console.error('Error loading photos:', error);
-      console.error('Error details:', error.code, error.message);
+      console.error('Error code:', error?.code);
+      console.error('Error message:', error?.message);
+      console.error('Full error object:', error);
       
       // If it's a permission or CORS error, set photos to empty array
-      if (error.code === 'storage/unauthorized' || error.code === 'storage/unknown') {
-        console.log('Storage access denied or not configured, setting empty photos array');
+      if (error?.code === 'storage/unauthorized' || error?.code === 'storage/unknown' || error?.code === 'storage/invalid-url') {
+        console.log('Storage access issue detected, setting empty photos array');
+        setPhotos([]);
+      } else {
+        // For other errors, still set empty array but log more details
+        console.log('Unknown error occurred, setting empty photos array');
         setPhotos([]);
       }
     } finally {
@@ -142,6 +166,10 @@ export const Photos = () => {
     if (event.target.files) {
       setFiles(Array.from(event.target.files));
     }
+  };
+
+  const removeFileFromPreview = (indexToRemove: number) => {
+    setFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
   const removePhoto = async (photoId: string) => {
@@ -288,6 +316,41 @@ export const Photos = () => {
         </div>
       </motion.div>
 
+      {/* Debug Section */}
+      <motion.div 
+        className="bg-gradient-to-b from-red-900 to-red-800 border-2 border-red-600 rounded-2xl shadow-lg overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <div className="bg-black border-b border-red-600 p-4">
+          <div className="flex items-center space-x-2">
+            <motion.div 
+              className="w-2 h-2 bg-red-400 rounded-full"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <span className="text-white font-mono text-xl font-bold tracking-wider">DEBUG TERMINAL</span>
+          </div>
+        </div>
+        <div className="p-6">
+          <motion.button
+            onClick={() => {
+              console.log('Manual photo reload triggered...');
+              loadPhotos();
+            }}
+            className="bg-red-600 hover:bg-red-500 text-white font-mono font-bold py-3 px-6 rounded-xl border border-red-500 transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Reload Photos (Check Console)
+          </motion.button>
+          <p className="text-red-300 font-mono text-sm mt-2">
+            Check browser console (F12) for detailed debugging information
+          </p>
+        </div>
+      </motion.div>
+
       {/* Preview Section - Selected Files */}
       {files.length > 0 && (
         <motion.div 
@@ -324,22 +387,44 @@ export const Photos = () => {
               {files.map((file, index) => (
                 <motion.div 
                   key={index} 
-                  className="relative bg-black/40 rounded-2xl overflow-hidden border border-yellow-600 shadow-lg"
+                  className="relative bg-black/40 rounded-2xl overflow-hidden border border-yellow-600 shadow-lg group"
                   variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                   whileHover={{ scale: 1.02, y: -5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <div className="aspect-square overflow-hidden">
+                  <div className="aspect-square overflow-hidden relative">
                     <img
                       src={URL.createObjectURL(file)}
                       alt={`Preview ${index + 1}`}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
+                    {/* Remove button - appears on hover */}
+                    <motion.button
+                      onClick={() => removeFileFromPreview(index)}
+                      className="absolute top-2 right-2 w-8 h-8 bg-red-600 hover:bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      title="Remove from preview"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </motion.button>
                   </div>
                   <div className="p-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
-                      <span className="text-yellow-300 font-mono text-xs font-bold uppercase tracking-wide">Preview {index + 1}</span>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
+                        <span className="text-yellow-300 font-mono text-xs font-bold uppercase tracking-wide">Preview {index + 1}</span>
+                      </div>
+                      <motion.button
+                        onClick={() => removeFileFromPreview(index)}
+                        className="text-red-400 hover:text-red-300 font-mono text-xs uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Remove
+                      </motion.button>
                     </div>
                     <p className="text-gray-300 font-mono text-sm truncate">{file.name}</p>
                   </div>

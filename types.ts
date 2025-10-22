@@ -43,7 +43,7 @@ export interface Booking {
   createdAt?: any; // Firebase timestamp
 }
 
-export type AppTab = 'plan' | 'info' | 'photos';
+export type AppTab = 'home' | 'plan' | 'info' | 'photos';
 
 export interface AppContextType {
   addRsvp: (rsvp: Omit<RSVP, 'id'>) => Promise<void>;
