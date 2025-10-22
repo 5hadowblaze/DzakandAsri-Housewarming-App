@@ -126,29 +126,203 @@ END:VCALENDAR
                 <div className="p-6">
                     <div className="flex items-start space-x-4">
                         <motion.div 
-                            className="w-48 h-32 bg-gray-700 rounded-xl flex-shrink-0 relative overflow-hidden border border-gray-600"
+                            className="w-48 h-32 bg-gray-700 rounded-xl flex-shrink-0 relative overflow-hidden border border-gray-600 shadow-lg"
                             whileHover={{ scale: 1.05 }}
                             transition={{ type: "spring", stiffness: 300 }}
                         >
-                            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-600 -translate-y-1/2"></div>
-                            <div className="absolute left-1/2 top-0 h-full w-1 bg-gray-600 -translate-x-1/2"></div>
-                            <motion.div 
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gray-800 border-4 border-red-500"
-                                animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ duration: 2, repeat: Infinity }}
+                            <img 
+                                src="/sporle-court-photo.jpg" 
+                                alt="Dzak and Asri outside Sporle Court - our new home!" 
+                                className="w-full h-full object-cover"
                             />
+                            {/* Tube-style overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                            <motion.div 
+                                className="absolute bottom-2 left-2 right-2"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                                    <span className="text-white font-mono text-xs font-bold tracking-wide uppercase">
+                                        Sporle Court
+                                    </span>
+                                </div>
+                            </motion.div>
                         </motion.div>
                         <div>
-                            <p className="text-gray-200 font-mono font-medium">Our new place is at <span className="font-bold text-white">Flat 21, Sporle Court, London, SW11 2EP.</span></p>
+                            <p className="text-gray-200 font-mono font-medium">Our new place is at <a href="https://maps.app.goo.gl/UiDLcZmz8z5Yyjzt6" target="_blank" rel="noopener noreferrer" className="font-bold text-blue-400 hover:text-blue-300 underline hover:no-underline transition-colors duration-200">Flat 21, Sporle Court, London, SW11 2EP</a>.</p>
                             <p className="mt-2 text-gray-300 font-mono">The nearest major station is:</p>
                             <div className="flex flex-wrap gap-2 mt-3">
                                 <InfoPill text="Clapham Junction" color={TUBE_LINE_COLORS[TubeLine.OVERGROUND]} />
                             </div>
+                            <p className="mt-3 text-gray-400 font-mono text-sm italic">
+                                Come find the red doors and join us for our housewarming! 🏠🎉
+                            </p>
                         </div>
                     </div>
                 </div>
             </motion.div>
 
+            {/* Platform Services - Redesigned */}
+            <motion.div 
+                className="bg-gradient-to-b from-gray-900 to-gray-800 border-2 border-gray-600 rounded-2xl shadow-lg overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+            >
+                <div className="bg-black border-b border-gray-600 p-4">
+                    <div className="flex items-center space-x-2">
+                        <motion.div 
+                            className="w-2 h-2 bg-blue-400 rounded-full"
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        <span className="text-white font-mono text-xl font-bold tracking-wider">PASSENGER INFORMATION</span>
+                    </div>
+                    <motion.div 
+                        className="mt-1 text-xs font-mono text-gray-400 uppercase tracking-wide"
+                        animate={{ opacity: [0.8, 1, 0.8] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                    >
+                        Essential party details and contact services
+                    </motion.div>
+                </div>
+                
+                <div className="p-6">
+                    <div className="space-y-4 text-gray-300 font-mono">
+                        <p><strong className="text-green-300">What to Bring:</strong></p>
+                        <div className="space-y-2 text-gray-300 font-mono text-sm mt-2">
+                            <p className="flex items-center space-x-2">
+                                <span className="text-green-400">✓</span>
+                                <span><strong>Yourself!</strong> That's the most important thing</span>
+                            </p>
+                            <p className="flex items-center space-x-2">
+                                <span className="text-green-400">✓</span>
+                                <span><strong>Optional:</strong> Food to share or a housewarming gift</span>
+                            </p>
+                            <p className="flex items-center space-x-2">
+                                <span className="text-green-400">✓</span>
+                                <span><strong>Your Station Costume</strong> - see theme guide below!</span>
+                            </p>
+                        </div>
+                        
+                        {/* Theme Section */}
+                        <div className="mt-6 p-4 bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-600 rounded-xl">
+                            <div className="flex items-center space-x-2 mb-3">
+                                <span className="text-2xl">🎭</span>
+                                <h3 className="text-purple-300 font-mono font-bold text-lg uppercase tracking-wide">Dress Code Theme</h3>
+                            </div>
+                            <div className="space-y-3">
+                                <p className="text-gray-300 font-mono text-sm">
+                                    <strong className="text-purple-300">London Underground Station Costume!</strong>
+                                </p>
+                                <p className="text-gray-400 font-mono text-sm leading-relaxed">
+                                    Choose any London Underground station name and dress as what that station represents. Get creative!
+                                </p>
+                                
+                                {/* Example Cards */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                                    {[
+                                        { station: "Angel", costume: "Angel costume", emoji: "👼" },
+                                        { station: "Bank", costume: "Business banker", emoji: "💼" },
+                                        { station: "King's Cross", costume: "Medieval king", emoji: "👑" },
+                                        { station: "Arsenal", costume: "Football fan", emoji: "⚽" }
+                                    ].map((example, i) => (
+                                        <motion.div
+                                            key={example.station}
+                                            className="bg-black/40 border border-purple-500/50 rounded-lg p-3 text-center"
+                                            whileHover={{ scale: 1.02, borderColor: "#a855f7" }}
+                                            transition={{ type: "spring", stiffness: 400 }}
+                                        >
+                                            <div className="text-xl mb-1">{example.emoji}</div>
+                                            <div className="text-purple-200 font-mono font-bold text-xs">{example.station}</div>
+                                            <div className="text-gray-400 font-mono text-xs">{example.costume}</div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                                
+                                <div className="text-center mt-4">
+                                    <motion.button
+                                        className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-mono font-bold rounded-lg text-sm transition-colors duration-200"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => {
+                                            // Scroll to home page or show more examples
+                                            window.open('/', '_blank');
+                                        }}
+                                    >
+                                        See More Examples
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p><strong className="text-blue-300">Contact & Support:</strong> Need anything?</p>
+                            <div className="mt-3 space-y-3">
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <span className="text-gray-300">Amir Dzakwan:</span>
+                                    <motion.a 
+                                        href="https://wa.me/60178461844" 
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors duration-200 text-sm"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <span>💬</span>
+                                        <span>WhatsApp +6017 846 1844</span>
+                                    </motion.a>
+                                    <span className="text-gray-400">|</span>
+                                    <a href="tel:+447570478826" className="text-blue-400 font-bold hover:underline">📞 +44 7570 478826</a>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <span className="text-gray-300">Asri:</span>
+                                    <motion.a 
+                                        href="https://wa.me/447551943933" 
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors duration-200 text-sm"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <span>�</span>
+                                        <span>WhatsApp +44 7551 943933</span>
+                                    </motion.a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-gradient-to-r from-yellow-900/40 to-yellow-800/40 border border-yellow-600 rounded-xl p-4">
+                            <div className="flex items-center space-x-2 mb-3">
+                                <span className="text-2xl">📶</span>
+                                <h3 className="text-yellow-300 font-mono font-bold text-lg uppercase tracking-wide">Onboard Wi-Fi</h3>
+                            </div>
+                            <div className="space-y-2 text-gray-300 font-mono text-sm">
+                                <p><strong className="text-yellow-300">Network:</strong></p>
+                                <p className="text-white font-semibold bg-black/40 px-2 py-1 rounded">Flat PPR Housewarming Wifi</p>
+                                <p><strong className="text-yellow-300">Password:</strong></p>
+                                <p className="text-white font-semibold bg-black/40 px-2 py-1 rounded">mindthegap</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-6 text-center">
+                        <motion.a 
+                            href="https://calendar.app.google/k3RTqCBAzGzg8qxk8"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block px-6 py-3 bg-[#00782A] text-white font-mono font-bold rounded-xl shadow-lg border-2 border-green-600 hover:bg-green-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-400 uppercase tracking-wide"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Add to Calendar
+                        </motion.a>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Station Regulations */}
             <motion.div 
                 className="bg-gradient-to-b from-gray-900 to-gray-800 border-2 border-gray-600 rounded-2xl shadow-lg overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
@@ -191,62 +365,94 @@ END:VCALENDAR
                     <RuleItem icon="🎶" title="Volume Control" description="Tunes up, drama down. Keep the vibes groovy till 10:30, then we switch to the chill line." />
                     <RuleItem icon="🚭" title="Smoking & Vaping" description="Only on the balcony or outside — this isn’t the steam train era." />
                     <RuleItem icon="🍕" title="Food Service" description="Help yourself, share the snacks, and please don’t treat the sofa like a dining car. Let us know of any dietary needs before digging in." />
-                    <RuleItem icon="📸" title="Photo Etiquette" description="Flash only with consent — not everyone’s ready for the front page of the Evening Standard. Also, be mindful of camera equipment and devices around the house — they’re not lost property." />
-                    <RuleItem icon="🧃" title="Spill Station" description="Try not to spill, but if you do — no worries! Just shout “spill!” and we’ll sort it." />
+                    <RuleItem icon="📸" title="Photo Etiquette" description="Keep in mind that photos will be taken throughout the event. Flash only with consent — not everyone's ready for the front page of the Evening Standard. Also, be mindful of camera equipment and devices around the house — they're not lost property." />
+                    <RuleItem icon="🧃" title="Spill Station" description="Try not to spill, but if you do — no worries! Just shout 'spill!' and we'll sort it." />
                     <RuleItem icon="🛋️" title="Restricted Zones" description="Bedrooms and desks are first-class only (for coats, charging phones, and storage)." />
                     <RuleItem icon="🧻" title="Bathroom Bureau" description="Flush properly, keep it dry, and if you finish the roll — restock before your next stop." />
-                    <RuleItem icon="🚪" title="Departures" description="Say bye to the host, take your belongings, and mind the door on your way out." />
                   </motion.div>
                 </div>
               </motion.div>
 
-              {/* Platform Services */}
-              <motion.div 
+            {/* House Facts */}
+            <motion.div 
                 className="bg-gradient-to-b from-gray-900 to-gray-800 border-2 border-gray-600 rounded-2xl shadow-lg overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-              >
+                transition={{ delay: 0.5 }}
+            >
+                {/* Tube-style header */}
                 <div className="bg-black border-b border-gray-600 p-4">
-                  <div className="flex items-center space-x-2">
-                    <motion.div 
-                      className="w-2 h-2 bg-blue-400 rounded-full"
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    <span className="text-white font-mono text-xl font-bold tracking-wider">PLATFORM SERVICES</span>
-                  </div>
-                  <motion.div 
-                    className="mt-1 text-xs font-mono text-gray-400 uppercase tracking-wide"
-                    animate={{ opacity: [0.8, 1, 0.8] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
-                    Additional station amenities and contact information
-                  </motion.div>
-                </div>
-                
-                <div className="p-6">
-                  <div className="space-y-4 text-gray-300 font-mono">
-                    <p><strong className="text-blue-300">What to Bring:</strong> Just yourselves and your station-themed costume! We'll provide food and drinks throughout the day.</p>
-                    <p><strong className="text-blue-300">Contact:</strong> Need anything? Contact Amir Dzakwan — WhatsApp: <a href="https://wa.me/60178461844" className="text-blue-400 font-bold hover:underline">+6017 846 1844</a> | Mobile (UK): <a href="tel:+447570478826" className="text-blue-400 font-bold hover:underline">+44 7570 478826</a> or Asri at <a href="tel:+447551943933" className="text-blue-400 font-bold hover:underline">+44 7551 943933</a>.</p>
-                    <div className="bg-black/40 rounded-xl p-4 border border-gray-600">
-                      <p className="font-bold text-blue-300 mb-2">📶 Onboard Wi-Fi</p>
-                      <p>Network: <span className="font-semibold text-white">Flat PPR Housewarming Wifi</span></p>
-                      <p>Password: <span className="font-semibold text-white">mindthegap</span></p>
+                    <div className="flex items-center space-x-2">
+                        <motion.div 
+                            className="w-2 h-2 bg-green-400 rounded-full"
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        <span className="text-white font-mono text-xl font-bold tracking-wider">STATION FACTS</span>
                     </div>
-                  </div>
-                  <div className="mt-6 text-center">
-                    <motion.button 
-                      onClick={generateICS} 
-                      className="px-6 py-3 bg-[#00782A] text-white font-mono font-bold rounded-xl shadow-lg border-2 border-green-600 hover:bg-green-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-400 uppercase tracking-wide"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <motion.div 
+                        className="mt-1 text-xs font-mono text-gray-400 uppercase tracking-wide"
+                        animate={{ opacity: [0.8, 1, 0.8] }}
+                        transition={{ duration: 3, repeat: Infinity }}
                     >
-                      Add to Calendar
-                    </motion.button>
-                  </div>
+                        Historical information about our platform
+                    </motion.div>
                 </div>
-              </motion.div>
+
+                <div className="p-6">
+                    <motion.div 
+                        className="bg-gradient-to-r from-green-900/40 to-green-800/40 border border-green-600 rounded-xl p-6"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.6 }}
+                    >
+                        <div className="flex items-center space-x-3 mb-4">
+                            <span className="text-3xl">🏠</span>
+                            <h3 className="text-green-300 font-mono font-bold text-xl uppercase tracking-wide">The Origin of "Flat PPR"</h3>
+                        </div>
+                        
+                        <div className="space-y-4 text-gray-300 font-mono">
+                            <p className="text-lg leading-relaxed">
+                                <strong className="text-green-300">Ever wondered why we call this place "Flat PPR"?</strong>
+                            </p>
+                            
+                            <div className="bg-black/40 border-l-4 border-green-500 pl-4 py-3 rounded-r-lg">
+                                <p className="text-sm leading-relaxed">
+                                    In Malaysia, <strong className="text-white">Flat PPR</strong> refers to a public low-cost housing project called 
+                                    <strong className="text-green-300"> Program Perumahan Rakyat</strong> (People's Housing Program). 
+                                    It is a government initiative to provide affordable housing, often in the form of flats, 
+                                    for low-income earners.
+                                </p>
+                            </div>
+                            
+                            <div className="flex items-start space-x-3 bg-gray-800/50 rounded-lg p-4">
+                                <span className="text-2xl mt-1">🇲🇾</span>
+                                <div>
+                                    <p className="text-sm leading-relaxed">
+                                        <strong className="text-green-300">Our Connection:</strong> 
+                                        While we're far from Malaysia now, the name "Flat PPR" carries a piece of home with us here in London. 
+                                        It's a playful nod to our roots and a reminder that home is what you make of it, 
+                                        whether it's affordable housing in KL or a cozy flat in Zone 2!
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="text-center mt-6">
+                                <motion.div
+                                    className="inline-flex items-center space-x-2 px-4 py-2 bg-green-600/20 border border-green-500 rounded-full"
+                                    animate={{ opacity: [0.7, 1, 0.7] }}
+                                    transition={{ duration: 3, repeat: Infinity }}
+                                >
+                                    <span className="text-green-400">💡</span>
+                                    <span className="text-green-300 font-mono text-sm font-semibold">
+                                        From Malaysian Housing Program to London Housewarming!
+                                    </span>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </motion.div>
             </div>
         </div>
     );
