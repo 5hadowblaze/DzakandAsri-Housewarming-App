@@ -810,8 +810,11 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
     // -1: Drag to start, 0: Roundel, 1: Date, 2: Location, 3: Theme/Dress Code, 4: Fading out
     const [step, setStep] = useState(-1);
     const [isSkipped, setIsSkipped] = useState(false);
+    const [sequenceStarted, setSequenceStarted] = useState(false);
 
     const handleDragComplete = () => {
+        console.log('Drag completed, starting sequence');
+        setSequenceStarted(true);
         setStep(0); // Start the regular splash sequence
     };
 
@@ -823,31 +826,49 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
     };
 
     useEffect(() => {
-        if (isSkipped) return; // Don't set timers if already skipped
+        if (isSkipped || !sequenceStarted) return; // Don't set timers if skipped or sequence not started
+        
+        console.log('Setting timer for step:', step); // Debug log
         
         let timer: NodeJS.Timeout;
         
         if (step === 0) {
             // Roundel screen - show for 4.5 seconds
-            timer = setTimeout(() => setStep(1), 4500);
+            timer = setTimeout(() => {
+                console.log('Moving from step 0 to step 1');
+                setStep(1);
+            }, 4500);
         } else if (step === 1) {
             // Date screen - show for 4 seconds
-            timer = setTimeout(() => setStep(2), 4000);
+            timer = setTimeout(() => {
+                console.log('Moving from step 1 to step 2');
+                setStep(2);
+            }, 4000);
         } else if (step === 2) {
             // Location screen - show for 4 seconds
-            timer = setTimeout(() => setStep(3), 4000);
+            timer = setTimeout(() => {
+                console.log('Moving from step 2 to step 3');
+                setStep(3);
+            }, 4000);
         } else if (step === 3) {
             // Theme screen - show for 6 seconds (increased for typewriter effect)
-            timer = setTimeout(() => setStep(4), 6000);
+            timer = setTimeout(() => {
+                console.log('Moving from step 3 to step 4');
+                setStep(4);
+            }, 6000);
         } else if (step === 4) {
             // Fade out - finish after 500ms
-            timer = setTimeout(() => onFinished(), 500);
+            timer = setTimeout(() => {
+                console.log('Finishing splash');
+                onFinished();
+            }, 500);
         }
 
         return () => {
+            console.log('Cleaning up timer for step:', step);
             if (timer) clearTimeout(timer);
         };
-    }, [step, onFinished, isSkipped]);
+    }, [step, onFinished, isSkipped, sequenceStarted]);
 
     // Separate effect for keyboard shortcuts
     useEffect(() => {
