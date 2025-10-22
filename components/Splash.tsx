@@ -5,6 +5,58 @@ interface SplashProps {
   onFinished: () => void;
 }
 
+interface TypewriterTextProps {
+  text: string;
+  delay?: number;
+  speed?: number;
+  className?: string;
+  onComplete?: () => void;
+}
+
+const TypewriterText: React.FC<TypewriterTextProps> = ({ 
+  text, 
+  delay = 0, 
+  speed = 50, 
+  className = "", 
+  onComplete 
+}) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex === 0) {
+      const delayTimer = setTimeout(() => {
+        setCurrentIndex(1);
+      }, delay);
+      return () => clearTimeout(delayTimer);
+    }
+
+    if (currentIndex > 0 && currentIndex <= text.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText(text.slice(0, currentIndex));
+        setCurrentIndex(currentIndex + 1);
+      }, speed);
+
+      return () => clearTimeout(timer);
+    } else if (currentIndex > text.length && onComplete) {
+      onComplete();
+    }
+  }, [currentIndex, text, delay, speed, onComplete]);
+
+  return (
+    <span className={className}>
+      {displayedText}
+      {currentIndex > 0 && currentIndex <= text.length && (
+        <motion.span
+          className="inline-block w-0.5 h-full bg-current ml-1"
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.8, repeat: Infinity }}
+        />
+      )}
+    </span>
+  );
+};
+
 const splashContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { 
@@ -785,8 +837,8 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
             // Location screen - show for 4 seconds
             timer = setTimeout(() => setStep(3), 4000);
         } else if (step === 3) {
-            // Theme screen - show for 4 seconds
-            timer = setTimeout(() => setStep(4), 4000);
+            // Theme screen - show for 6 seconds (increased for typewriter effect)
+            timer = setTimeout(() => setStep(4), 6000);
         } else if (step === 4) {
             // Fade out - finish after 500ms
             timer = setTimeout(() => onFinished(), 500);
@@ -1672,7 +1724,7 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
                                 />
                             </div>
                             
-                            {/* Main theme announcement */}
+                            {/* Main theme announcement with typewriter effect */}
                             <motion.div 
                                 className="mb-6 relative z-10"
                                 initial={{ y: 20, opacity: 0 }}
@@ -1690,7 +1742,11 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
                                     }}
                                     transition={{ duration: 4, repeat: Infinity }}
                                 >
-                                    London Underground
+                                    <TypewriterText 
+                                        text="London Underground"
+                                        delay={300}
+                                        speed={30}
+                                    />
                                 </motion.p>
                                 <motion.p 
                                     className="text-2xl sm:text-3xl text-purple-300 font-mono font-bold tracking-wide"
@@ -1703,11 +1759,15 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
                                     }}
                                     transition={{ duration: 3.5, repeat: Infinity }}
                                 >
-                                    Station Costume Theme
+                                    <TypewriterText 
+                                        text="Station Costume Theme"
+                                        delay={900}
+                                        speed={25}
+                                    />
                                 </motion.p>
                             </motion.div>
                             
-                            {/* Detailed instructions */}
+                            {/* Detailed instructions with typewriter effects */}
                             <motion.div 
                                 className="space-y-4 relative z-10"
                                 initial={{ y: 20, opacity: 0 }}
@@ -1719,7 +1779,11 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
                                     animate={{ opacity: [0.7, 1, 0.7] }}
                                     transition={{ duration: 3, repeat: Infinity }}
                                 >
-                                    🚇 Dress as your chosen London Underground Station
+                                    <TypewriterText 
+                                        text="🚇 Dress as your chosen London Underground Station"
+                                        delay={1500}
+                                        speed={20}
+                                    />
                                 </motion.p>
                                 
                                 <motion.div 

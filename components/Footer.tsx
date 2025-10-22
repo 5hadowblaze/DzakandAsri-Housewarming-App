@@ -4,7 +4,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="text-center py-6 px-4">
       <p className="text-xs text-gray-400">
-        Unofficial fan-themed design. Not affiliated with, or endorsed by, Transport for London.
+        Developed by Amir Dzakwan for educational purposes. Unofficial fan-themed design. Not affiliated with, or endorsed by, Transport for London.
       </p>
     </footer>
   );
