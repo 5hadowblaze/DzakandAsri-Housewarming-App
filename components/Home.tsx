@@ -62,13 +62,13 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const previewCards = [
     {
       id: 'plan',
-      title: 'RSVP',
-      description: 'Book your spot at the party',
-      icon: '🎫',
-      color: 'from-blue-600 to-purple-600',
-      borderColor: 'border-blue-500',
-      ledColor: '#3b82f6',
-      details: 'Choose your preferred time slot'
+      title: 'RSVP REQUIRED',
+      description: '⚠️ MANDATORY Registration',
+      icon: '🚨',
+      color: 'from-red-600 to-orange-600',
+      borderColor: 'border-red-500',
+      ledColor: '#ef4444',
+      details: 'Registration required before attendance • Choose your time slot'
     },
     {
       id: 'info',
@@ -412,6 +412,77 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </motion.div>
       </motion.div>
 
+      {/* RSVP REQUIREMENT NOTICE - Prominent */}
+      <motion.div 
+        className="mb-8 mx-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.6 }}
+      >
+        <motion.div 
+          className="bg-gradient-to-r from-red-900/80 to-orange-900/80 border-2 border-red-500 rounded-2xl shadow-2xl p-6 backdrop-blur-sm"
+          animate={{ 
+            borderColor: ['#ef4444', '#f97316', '#ef4444'],
+            boxShadow: [
+              '0 0 20px rgba(239, 68, 68, 0.3)',
+              '0 0 30px rgba(249, 115, 22, 0.4)',
+              '0 0 20px rgba(239, 68, 68, 0.3)'
+            ]
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          <div className="flex items-center justify-center mb-4">
+            <motion.div 
+              className="flex items-center space-x-3"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <motion.span 
+                className="text-3xl"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity }}
+              >
+                ⚠️
+              </motion.span>
+              <h2 className="text-2xl sm:text-3xl font-mono font-bold text-white uppercase tracking-wider">
+                RSVP REQUIRED
+              </h2>
+              <motion.span 
+                className="text-3xl"
+                animate={{ rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
+              >
+                🎫
+              </motion.span>
+            </motion.div>
+          </div>
+          
+          <div className="text-center space-y-3">
+            <motion.p 
+              className="text-lg sm:text-xl text-red-100 font-mono font-semibold"
+              animate={{ opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              You <strong className="text-white">MUST RSVP</strong> before attending the party
+            </motion.p>
+            
+            <p className="text-sm sm:text-base text-orange-200 font-mono">
+              No entry without prior registration • Limited capacity • Secure your spot now!
+            </p>
+            
+            <motion.div 
+              className="flex items-center justify-center space-x-2 mt-4"
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <span className="text-yellow-300 text-lg">👇</span>
+              <span className="text-yellow-300 font-mono font-bold">Click RSVP below to register</span>
+              <span className="text-yellow-300 text-lg">👇</span>
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.div>
+
       {/* Event Information - Separate Big Boxes */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         
@@ -700,13 +771,54 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <motion.button
               onClick={() => onNavigate('plan')}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-mono font-bold py-4 px-6 rounded-xl border border-blue-500 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
+              className="relative bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-mono font-bold py-5 px-6 rounded-xl border-2 border-red-400 transition-all duration-300 shadow-2xl"
+              whileHover={{ scale: 1.08, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              animate={{ 
+                boxShadow: [
+                  '0 0 20px rgba(239, 68, 68, 0.4)',
+                  '0 0 30px rgba(249, 115, 22, 0.5)',
+                  '0 0 20px rgba(239, 68, 68, 0.4)'
+                ]
+              }}
+              transition={{ 
+                boxShadow: { duration: 2, repeat: Infinity }
+              }}
             >
+              {/* Pulsing Required Badge */}
+              <motion.div 
+                className="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full"
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, 0, -5, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                REQUIRED
+              </motion.div>
+              
               <div className="flex items-center justify-center space-x-3">
-                <span className="text-xl">🎫</span>
-                <span>RSVP Now</span>
+                <motion.span 
+                  className="text-2xl"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 10, 0]
+                  }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  🎫
+                </motion.span>
+                <div className="flex flex-col items-center">
+                  <span className="text-lg">RSVP NOW</span>
+                  <span className="text-xs text-orange-200">Registration Required</span>
+                </div>
+                <motion.span 
+                  className="text-lg"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  ⚡
+                </motion.span>
               </div>
             </motion.button>
 

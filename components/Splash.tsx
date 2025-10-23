@@ -256,6 +256,29 @@ const DragToStartScreen: React.FC<{ onComplete: () => void }> = ({ onComplete })
                     >
                         Drag the logo to the platform to board
                     </motion.p>
+                    
+                    <motion.div 
+                        className="mt-4 p-3 bg-red-900/50 border border-red-500 rounded-lg"
+                        animate={{ 
+                            borderColor: ['#ef4444', '#f97316', '#ef4444']
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    >
+                        <motion.p 
+                            className="text-sm text-red-200 font-mono font-bold text-center"
+                            animate={{ opacity: [0.8, 1, 0.8] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                            ⚠️ RSVP REQUIRED BEFORE ATTENDANCE ⚠️
+                        </motion.p>
+                        <motion.p 
+                            className="text-xs text-orange-200 font-mono text-center mt-1"
+                            animate={{ opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                        >
+                            Register inside to secure your spot
+                        </motion.p>
+                    </motion.div>
                 </motion.div>
 
                 {/* Draggable Logo - will transition to next screen */}
@@ -1831,6 +1854,52 @@ const Splash: React.FC<SplashProps> = ({ onFinished }) => {
                                         Angel → Angel wings & halo<br/>
                                         Liverpool Street → Liverpool FC jersey<br/>
                                         Bond Street → Formal suit & tie
+                                    </motion.p>
+                                </motion.div>
+                                
+                                {/* RSVP REQUIREMENT MESSAGE */}
+                                <motion.div 
+                                    className="bg-red-900/60 border-2 border-red-500 rounded-xl p-4 backdrop-blur-sm"
+                                    animate={{ 
+                                        borderColor: ['#ef4444', '#f97316', '#ef4444'],
+                                        backgroundColor: ['rgba(127, 29, 29, 0.6)', 'rgba(154, 52, 18, 0.6)', 'rgba(127, 29, 29, 0.6)']
+                                    }}
+                                    transition={{ duration: 3, repeat: Infinity }}
+                                >
+                                    <motion.div 
+                                        className="flex items-center justify-center space-x-2 mb-2"
+                                        animate={{ scale: [1, 1.05, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity }}
+                                    >
+                                        <span className="text-2xl">🚨</span>
+                                        <motion.p 
+                                            className="text-lg text-white font-mono font-bold tracking-wide uppercase"
+                                            animate={{ 
+                                                textShadow: [
+                                                    "0 0 10px #ffffff",
+                                                    "0 0 20px #ffffff", 
+                                                    "0 0 10px #ffffff"
+                                                ]
+                                            }}
+                                            transition={{ duration: 2, repeat: Infinity }}
+                                        >
+                                            RSVP MANDATORY
+                                        </motion.p>
+                                        <span className="text-2xl">🎫</span>
+                                    </motion.div>
+                                    <motion.p 
+                                        className="text-sm text-red-100 font-mono text-center"
+                                        animate={{ opacity: [0.8, 1, 0.8] }}
+                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                    >
+                                        Registration required before party attendance
+                                    </motion.p>
+                                    <motion.p 
+                                        className="text-xs text-orange-200 font-mono text-center mt-1"
+                                        animate={{ opacity: [0.7, 1, 0.7] }}
+                                        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                                    >
+                                        Limited capacity • No walk-ins • Secure your spot now!
                                     </motion.p>
                                 </motion.div>
                                 
