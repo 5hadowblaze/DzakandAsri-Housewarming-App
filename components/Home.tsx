@@ -123,6 +123,295 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </motion.p>
       </motion.div>
 
+      {/* Papercut Style Animated Host Faces */}
+      <motion.div 
+        className="flex justify-center items-center space-x-12 mb-12"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+      >
+        {/* Amir's Papercut Portrait */}
+        <motion.div 
+          className="relative"
+          animate={{ 
+            y: [0, -8, 0],
+            rotate: [0, 1, 0, -1, 0]
+          }}
+          transition={{ 
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          {/* Drop Shadow for Papercut Effect */}
+          <motion.div 
+            className="absolute inset-0 bg-black/30 rounded-full blur-sm transform translate-x-2 translate-y-2 w-32 h-32 sm:w-40 sm:h-40"
+            animate={{ 
+              scale: [1, 1.05, 1],
+              opacity: [0.3, 0.4, 0.3]
+            }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
+          
+          {/* Circular Container for Image */}
+          <div className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 border-4 border-blue-300 shadow-lg">
+            {/* Main Portrait Image */}
+            <motion.img 
+              src="/amir-papercut.png"
+              alt="Amir Dzakwan - Papercut Portrait"
+              className="w-full h-full object-cover object-center scale-110"
+              animate={{ 
+                scale: [1.1, 1.15, 1.1],
+                filter: [
+                  "brightness(1) contrast(1.1)",
+                  "brightness(1.05) contrast(1.15)",
+                  "brightness(1) contrast(1.1)"
+                ]
+              }}
+              transition={{ duration: 4, repeat: Infinity }}
+              style={{
+                imageRendering: "crisp-edges"
+              }}
+            />
+          </div>
+          
+          {/* Layered Paper Effect Rings */}
+          <motion.div 
+            className="absolute inset-0 border-2 border-blue-400/50 rounded-full w-32 h-32 sm:w-40 sm:h-40"
+            animate={{ 
+              scale: [1, 1.1, 1],
+              rotate: [0, 360]
+            }}
+            transition={{ 
+              scale: { duration: 5, repeat: Infinity },
+              rotate: { duration: 20, repeat: Infinity, ease: "linear" }
+            }}
+          />
+          
+          <motion.div 
+            className="absolute inset-2 border border-blue-300/30 rounded-full"
+            animate={{ 
+              scale: [1.05, 1, 1.05],
+              rotate: [0, -360]
+            }}
+            transition={{ 
+              scale: { duration: 4, repeat: Infinity, delay: 1 },
+              rotate: { duration: 25, repeat: Infinity, ease: "linear" }
+            }}
+          />
+          
+          {/* Floating Papercut Elements */}
+          <motion.div
+            className="absolute -top-4 -right-3 text-2xl z-20"
+            animate={{ 
+              rotate: [0, 360],
+              y: [0, -5, 0],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{ 
+              rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+              y: { duration: 3, repeat: Infinity },
+              scale: { duration: 2, repeat: Infinity, delay: 1 }
+            }}
+            style={{
+              filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))"
+            }}
+          >
+            🎉
+          </motion.div>
+          
+          <motion.div
+            className="absolute -bottom-2 -left-3 text-lg z-20"
+            animate={{ 
+              x: [0, 3, 0],
+              rotate: [0, 10, 0],
+              y: [0, -2, 0]
+            }}
+            transition={{ 
+              duration: 4, 
+              repeat: Infinity, 
+              delay: 1,
+              ease: "easeInOut"
+            }}
+            style={{
+              filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))"
+            }}
+          >
+            🚇
+          </motion.div>
+          
+          {/* Papercut Name Tag */}
+          <motion.div 
+            className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-mono font-bold shadow-lg z-20"
+            animate={{ 
+              y: [0, -3, 0],
+              boxShadow: [
+                "0 4px 8px rgba(0,0,0,0.3)",
+                "0 6px 12px rgba(0,0,0,0.4)",
+                "0 4px 8px rgba(0,0,0,0.3)"
+              ]
+            }}
+            transition={{ duration: 3, repeat: Infinity, delay: 2 }}
+            style={{
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
+            }}
+          >
+            AMIR DZAKWAN
+          </motion.div>
+        </motion.div>
+
+        {/* Connector Symbol with Papercut Style */}
+        <motion.div
+          className="text-4xl font-bold text-yellow-400 font-mono z-10"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            rotate: [0, 5, 0, -5, 0],
+            textShadow: [
+              "0 0 10px rgba(255, 193, 7, 0.5)",
+              "0 0 20px rgba(255, 193, 7, 0.8)",
+              "0 0 10px rgba(255, 193, 7, 0.5)"
+            ]
+          }}
+          transition={{ duration: 4, repeat: Infinity }}
+          style={{
+            filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))"
+          }}
+        >
+          &
+        </motion.div>
+
+        {/* Asri's Papercut Portrait */}
+        <motion.div 
+          className="relative"
+          animate={{ 
+            y: [0, -6, 0],
+            rotate: [0, -1, 0, 1, 0]
+          }}
+          transition={{ 
+            duration: 5.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.8
+          }}
+        >
+          {/* Drop Shadow for Papercut Effect */}
+          <motion.div 
+            className="absolute inset-0 bg-black/30 rounded-full blur-sm transform translate-x-2 translate-y-2 w-32 h-32 sm:w-40 sm:h-40"
+            animate={{ 
+              scale: [1, 1.05, 1],
+              opacity: [0.3, 0.4, 0.3]
+            }}
+            transition={{ duration: 4.5, repeat: Infinity, delay: 1 }}
+          />
+          
+          {/* Circular Container for Image */}
+          <div className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-purple-100 to-purple-200 border-4 border-purple-300 shadow-lg">
+            {/* Main Portrait Image */}
+            <motion.img 
+              src="/asri-papercut.png"
+              alt="Asri - Papercut Portrait"
+              className="w-full h-full object-cover object-center scale-110"
+              animate={{ 
+                scale: [1.1, 1.15, 1.1],
+                filter: [
+                  "brightness(1) contrast(1.1)",
+                  "brightness(1.05) contrast(1.15)",
+                  "brightness(1) contrast(1.1)"
+                ]
+              }}
+              transition={{ duration: 4.5, repeat: Infinity, delay: 1 }}
+              style={{
+                imageRendering: "crisp-edges"
+              }}
+            />
+          </div>
+          
+          {/* Layered Paper Effect Rings */}
+          <motion.div 
+            className="absolute inset-0 border-2 border-purple-400/50 rounded-full w-32 h-32 sm:w-40 sm:h-40"
+            animate={{ 
+              scale: [1, 1.1, 1],
+              rotate: [0, -360]
+            }}
+            transition={{ 
+              scale: { duration: 5.5, repeat: Infinity },
+              rotate: { duration: 22, repeat: Infinity, ease: "linear" }
+            }}
+          />
+          
+          <motion.div 
+            className="absolute inset-2 border border-purple-300/30 rounded-full"
+            animate={{ 
+              scale: [1.05, 1, 1.05],
+              rotate: [0, 360]
+            }}
+            transition={{ 
+              scale: { duration: 4.5, repeat: Infinity, delay: 0.5 },
+              rotate: { duration: 27, repeat: Infinity, ease: "linear" }
+            }}
+          />
+          
+          {/* Floating Papercut Elements */}
+          <motion.div
+            className="absolute -top-4 -left-3 text-2xl z-20"
+            animate={{ 
+              y: [0, -8, 0],
+              x: [0, 2, 0],
+              rotate: [0, -10, 0],
+              scale: [1, 1.1, 1]
+            }}
+            transition={{ 
+              duration: 5, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            style={{
+              filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))"
+            }}
+          >
+            🏠
+          </motion.div>
+          
+          <motion.div
+            className="absolute -bottom-2 -right-3 text-lg z-20"
+            animate={{ 
+              rotate: [0, 360],
+              scale: [1, 1.2, 1],
+              y: [0, -3, 0]
+            }}
+            transition={{ 
+              rotate: { duration: 6, repeat: Infinity, ease: "linear", delay: 2 },
+              scale: { duration: 3, repeat: Infinity },
+              y: { duration: 2.5, repeat: Infinity, delay: 1 }
+            }}
+            style={{
+              filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))"
+            }}
+          >
+            🎈
+          </motion.div>
+          
+          {/* Papercut Name Tag */}
+          <motion.div 
+            className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-mono font-bold shadow-lg z-20"
+            animate={{ 
+              y: [0, -3, 0],
+              boxShadow: [
+                "0 4px 8px rgba(0,0,0,0.3)",
+                "0 6px 12px rgba(0,0,0,0.4)",
+                "0 4px 8px rgba(0,0,0,0.3)"
+              ]
+            }}
+            transition={{ duration: 3.5, repeat: Infinity, delay: 1 }}
+            style={{
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
+            }}
+          >
+            ASRI
+          </motion.div>
+        </motion.div>
+      </motion.div>
+
       {/* Event Information - Separate Big Boxes */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         
